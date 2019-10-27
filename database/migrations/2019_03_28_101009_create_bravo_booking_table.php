@@ -22,6 +22,7 @@ class CreateBravoBookingTable extends Migration
             $table->integer('payment_id')->nullable();
             $table->string('gateway',50)->nullable();
             $table->integer('object_id')->nullable();
+            $table->integer('timeshare_years')->nullable();
             $table->string('object_model',255)->nullable();
 
             $table->dateTime('start_date')->nullable();

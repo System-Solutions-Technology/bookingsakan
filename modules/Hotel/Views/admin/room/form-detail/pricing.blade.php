@@ -14,6 +14,17 @@
         </div>
     </div>
     <hr>
+    <!-- hey hey timeshare -->
+    @if ($hotel->timeshare == 1)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>{{__("Timeshare Price")}} <span class="text-danger">*</span></label>
+                    <input type="number" required value="{{$row->timeshare_price ?? 1}}" min="1" max="100" placeholder="{{__("Number")}}" name="timeshare_price" class="form-control">
+                </div>
+            </div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">

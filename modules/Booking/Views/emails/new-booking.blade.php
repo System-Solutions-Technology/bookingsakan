@@ -1,6 +1,5 @@
 @extends('Email::layout')
 @section('content')
-
     <div class="b-container">
         <div class="b-panel">
             @switch($to)
@@ -21,6 +20,7 @@
             @endswitch
 
             @include($service->email_new_booking_file ?? '')
+            
         </div>
         @include('Booking::emails.parts.panel-customer')
     </div>

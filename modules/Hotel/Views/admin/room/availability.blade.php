@@ -17,7 +17,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>                        
         @if(count($rows))
         <div class="panel">
             <div class="panel-title"><strong>{{__('Availability')}}</strong></div>
@@ -29,6 +29,7 @@
                                 <li class="nav-item event-name ">
                                     <a class="nav-link" data-id="{{$item->id}}" data-toggle="tab" href="#calendar-{{$item->id}}" title="{{$item->title}}" >#{{$item->id}} - {{$item->title}}</a>
                                 </li>
+
                             @endforeach
                         </ul>
                     </div>
@@ -44,6 +45,7 @@
         <div class="d-flex justify-content-center">
             {{$rows->appends($request->query())->links()}}
         </div>
+
     </div>
     <div id="bravo_modal_calendar" class="modal fade">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
@@ -101,6 +103,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('script.head')

@@ -95,7 +95,8 @@ class AvailabilityController extends FrontendController{
                 'name'  => __('Availability'),
                 'class' => 'active'
             ],
-        ];
+        ];        
+
         $hotel = $this->currentHotel;
         $page_title = __('Room Availability');
 
@@ -119,7 +120,6 @@ class AvailabilityController extends FrontendController{
         if(empty($room)){
             $this->sendError(__('room not found'));
         }
-
         $query = $this->roomDateClass::query();
         $query->where('target_id',$request->query('id'));
         $query->where('start_date','>=',date('Y-m-d H:i:s',strtotime($request->query('start'))));
@@ -127,7 +127,6 @@ class AvailabilityController extends FrontendController{
 
         $rows =  $query->take(40)->get();
         $allDates = [];
-
         for($i = strtotime($request->query('start')); $i <= strtotime($request->query('end')); $i+= DAY_IN_SECONDS)
         {
             $date = [
@@ -146,6 +145,7 @@ class AvailabilityController extends FrontendController{
             $date['active'] = 1;
             $allDates[date('Y-m-d',$i)] = $date;
         }
+
         if(!empty($rows))
         {
             foreach ($rows as $row)

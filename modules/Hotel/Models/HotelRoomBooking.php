@@ -34,6 +34,13 @@ class HotelRoomBooking extends Bookable
            $join->on('bravo_bookings.id','=',$this->table.'.booking_id');
         })->whereNotIn('bravo_bookings.status',Booking::$notAcceptedStatus);
     }
+    //timeshare hey hey
+    public function scopeActive2($query){
+        //bravo_bookings.object_model = "hotel" and 
+        return $query->whereRaw('bravo_hotel_room_bookings.booking_id in (
+            select id from bravo_bookings where bravo_bookings.status not in("draft","cancelled")
+        )');
+    }
 
     public function room(){
         return $this->hasOne(HotelRoom::class,'id','room_id')->withDefault();

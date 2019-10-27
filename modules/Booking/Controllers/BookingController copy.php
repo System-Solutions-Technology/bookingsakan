@@ -25,6 +25,7 @@ class BookingController extends \App\Http\Controllers\Controller
     {
 
         $booking = $this->booking::where('code', $code)->first();
+
         if (empty($booking)) {
             abort(404);
         }
@@ -42,7 +43,6 @@ class BookingController extends \App\Http\Controllers\Controller
             'gateways'   => $this->getGateways(),
             'user'       => Auth::user()
         ];
-
         return view('Booking::frontend/checkout', $data);
     }
 
@@ -88,7 +88,6 @@ class BookingController extends \App\Http\Controllers\Controller
         }
         $code = $request->input('code');
         $booking = $this->booking::where('code', $code)->first();
-
         if (empty($booking)) {
             abort(404);
         }
@@ -218,15 +217,11 @@ class BookingController extends \App\Http\Controllers\Controller
     {
         $validator = Validator::make($request->all(), [
             'service_id'   => 'required|integer',
-            'service_type' => 'required',
-            //'timeshare_years' => 'optional'
+            'service_type' => 'required'
         ]);
-       
-
         if ($validator->fails()) {
             $this->sendError('', ['errors' => $validator->errors()]);
         }
-
         $service_type = $request->input('service_type');
         $service_id = $request->input('service_id');
         $allServices = get_bookable_services();

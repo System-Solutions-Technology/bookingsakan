@@ -53,7 +53,6 @@ class Hotel extends Bookable
 
     protected $tmp_rooms = [];
 
-
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -215,17 +214,13 @@ class Hotel extends Bookable
         $discount = 0;
         $start_date = new \DateTime($request->input('start_date'));
         $end_date = new \DateTime($request->input('end_date'));
+
         $total = 0;
-        
         if(!empty($this->tmp_selected_rooms)){
             foreach ($this->tmp_selected_rooms as $room){
                 if(isset($this->tmp_rooms_by_id[$room['id']]))
                 {
-                    if ($request->exists('timeshare_years') && $request->timeshare_years > 1) {
-                        $total += $this->tmp_rooms_by_id[$room['id']]->tmp_timeshare_price * $room['number_selected'];
-                    }else{
-                        $total += $this->tmp_rooms_by_id[$room['id']]->tmp_price * $room['number_selected'];
-                    }
+                    $total += $this->tmp_rooms_by_id[$room['id']]->tmp_price * $room['number_selected'];
                 }
             }
         }
@@ -253,7 +248,6 @@ class Hotel extends Bookable
         $booking->total_guests = $total_guests;
         $booking->start_date = $start_date->format('Y-m-d H:i:s');
         $booking->end_date = $end_date->format('Y-m-d H:i:s');
-        $booking->timeshare_years = ($request->timeshare_years>1)?$request->timeshare_years:0;
         $booking->buyer_fees = $list_fees ?? '';
         $booking->total_before_fees = $total_before_fees;
         $booking->calculateCommission();
@@ -271,57 +265,28 @@ class Hotel extends Bookable
             $booking->addMeta('children', $request->input('children'));
 
             // Add Room Booking
-            
-            $start_date = $start_date->format('Y-m-d H:i:s');
-            $end_date = $end_date->format('Y-m-d H:i:s');
-
             if(!empty($this->tmp_selected_rooms)){
                 foreach ($this->tmp_selected_rooms as $room){
                     if(isset($this->tmp_rooms_by_id[$room['id']]))
-                    {   
-                        
-                        if ($request->exists('timeshare_years')  && $request->timeshare_years > 1 ) {
-                            $num_days = (strtotime($end_date) - strtotime($start_date))  / DAY_IN_SECONDS;
-                            for ($i=0; $i <$request->timeshare_years ; $i++) { 
-                            
-                                $hotelRoomBooking = new HotelRoomBooking();
-                                $hotelRoomBooking->fillByAttr([
-                                    'room_id','parent_id','start_date','end_date','number','booking_id','price'
-                                ],[
-                                    'room_id'=>$room['id'],
-                                    'parent_id'=>$this->id,
-                                    'start_date'=>$start_date,
-                                    'end_date'=>$end_date,
-                                    'number'=>$room['number_selected'],
-                                    'booking_id'=>$booking->id,
-                                    'price'=>($this->tmp_rooms_by_id[$room['id']]->tmp_timeshare_price)/$request->timeshare_years
-                                ]);
+                    {
+                        $hotelRoomBooking = new HotelRoomBooking();
+                        $hotelRoomBooking->fillByAttr([
+                            'room_id','parent_id','start_date','end_date','number','booking_id','price'
+                        ],[
+                            'room_id'=>$room['id'],
+                            'parent_id'=>$this->id,
+                            'start_date'=>$start_date->format('Y-m-d H:i:s'),
+                            'end_date'=>$end_date->format('Y-m-d H:i:s'),
+                            'number'=>$room['number_selected'],
+                            'booking_id'=>$booking->id,
+                            'price'=>$this->tmp_rooms_by_id[$room['id']]->tmp_price
+                        ]);
 
-                                $hotelRoomBooking->save();
-                                $start_date  = date("Y-m-d", strtotime(date("Y-m-d", strtotime($start_date)) . " + 1 year"));
-                                $end_date  = date("Y-m-d", strtotime(date("Y-m-d", strtotime($start_date)) . " + ".$num_days." days"));
-                            }
-                        }else{
-                            
-                            $hotelRoomBooking = new HotelRoomBooking();
-                            $hotelRoomBooking->fillByAttr([
-                                'room_id','parent_id','start_date','end_date','number','booking_id','price'
-                            ],[
-                                'room_id'=>$room['id'],
-                                'parent_id'=>$this->id,
-                                'start_date'=>$start_date,
-                                'end_date'=>$end_date,
-                                'number'=>$room['number_selected'],
-                                'booking_id'=>$booking->id,
-                                'price'=>$this->tmp_rooms_by_id[$room['id']]->tmp_price
-                            ]);
-
-                            $hotelRoomBooking->save();
-                        }
-                       
+                        $hotelRoomBooking->save();
                     }
                 }
             }
+
             $this->sendSuccess([
                 'url' => $booking->getCheckoutUrl()
             ]);
@@ -372,7 +337,7 @@ class Hotel extends Bookable
             'adults'     => 'required|integer|min:1',
             'children'     => 'required|integer|min:0',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'required|date_format:Y-m-d'
         ];
 
         // Validation
@@ -758,13 +723,10 @@ class Hotel extends Bookable
         $this->tmp_rooms = [];
         foreach($rooms as $room){
             if($room->isAvailableAt($filters)){
-
-                $tmp_nights =$room->tmp_nights;
-                $tmp_price = ($filters['timeshare_years'] >1 )? $room->tmp_timeshare_price:$room->tmp_price ;
                 $res[] = [
                     'id'=>$room->id,
                     'title'=>$room->title,
-                    'price'=>$tmp_price ?? 0,
+                    'price'=>$room->tmp_price ?? 0,
                     'size_html'=>$room->size ? size_unit_format($room->size) : '',
                     'beds_html'=>$room->beds ? 'x'.$room->beds : '',
                     'adults_html'=>$room->adults ? 'x'.$room->adults : '',
@@ -774,13 +736,11 @@ class Hotel extends Bookable
                     'image'=>$room->image_id ? get_file_url($room->image_id,'medium') :'',
                     'tmp_number'=>$room->tmp_number,
                     'gallery'=>$room->getGallery(),
-                    'price_html'=>format_money($tmp_price).'<span class="unit">/'.($tmp_nights ? __(':count nights',['count'=>$tmp_nights]) : __(":count night",['count'=>$tmp_nights])).'</span>'
-                    //'price_html'=>format_money($room->tmp_price).'<span class="unit">/'.($room->tmp_nights ? __(':count nights',['count'=>$room->tmp_nights]) : __(":count night",['count'=>$room->tmp_nights])).'</span>'
+                    'price_html'=>format_money($room->tmp_price).'<span class="unit">/'.($room->tmp_nights ? __(':count nights',['count'=>$room->tmp_nights]) : __(":count night",['count'=>$room->tmp_nights])).'</span>'
                 ];
                 $this->tmp_rooms[] = $room;
             }
         }
-
         return $res;
     }
 }

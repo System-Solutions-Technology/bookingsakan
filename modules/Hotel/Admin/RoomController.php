@@ -172,19 +172,37 @@ class RoomController extends AdminController
             $row = new $this->roomClass();
             $row->status = "publish";
         }
-        $dataKeys = [
-            'title',
-            'content',
-            'image_id',
-            'gallery',
-            'price',
-            'number',
-            'beds',
-            'size',
-            'adults',
-            'children',
-            'status',
-        ];
+
+        if ($request->exists('timeshare_price')) {
+            $dataKeys = [
+                'title',
+                'content',
+                'image_id',
+                'gallery',
+                'price',
+                'timeshare_price',
+                'number',
+                'beds',
+                'size',
+                'adults',
+                'children',
+                'status',
+            ];
+        }else{
+            $dataKeys = [
+                'title',
+                'content',
+                'image_id',
+                'gallery',
+                'price',
+                'number',
+                'beds',
+                'size',
+                'adults',
+                'children',
+                'status',
+            ];
+        }
 
         $row->fillByAttr($dataKeys,$request->input());
 

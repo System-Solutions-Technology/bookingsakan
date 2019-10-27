@@ -1,4 +1,5 @@
 <tr>
+
     <td class="booking-history-type">
         <i class="fa fa-bolt"></i>
         <small>{{$booking->object_model}}</small>
@@ -17,8 +18,14 @@
     </td>
     <td class="a-hidden">{{display_date($booking->created_at)}}</td>
     <td class="a-hidden">
-        {{__("Start date")}} : {{display_date($booking->start_date)}} <br>
-        {{__("End date")}} : {{display_date($booking->end_date)}} <br>
+        
+            {{__("Start date")}} : {{display_date($booking->start_date)}} <br>
+        @if ($booking->timeshare_years > 1)
+            Timeshare : {{$booking->timeshare_years}} Years
+        @else
+            {{__("End date")}} : {{display_date($booking->end_date)}}
+        @endif
+        <br>
         {{__("Duration")}} :
 
         @if($booking->duration_nights <= 1)

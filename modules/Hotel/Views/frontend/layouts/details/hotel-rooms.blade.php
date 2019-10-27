@@ -1,4 +1,5 @@
 <div id="hotel-rooms" class="hotel_rooms_form" v-cloak="">
+
     <h3 class="heading-section">{{__('Available Rooms')}}</h3>
     <div class="form-search-rooms">
         <div class="d-flex form-search-row">
@@ -53,7 +54,52 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-btn">
+            <!-- hey hey add translations-->
+            <div class="col-md-2">
+                <div class="form-group">
+                    <i class="fa fa-angle-down arrow"></i>
+                    <div class="form-content dropdown-toggle" data-toggle="dropdown">
+                        <label class="form-label">{{__('Timeshare')}}</label>
+                        <div class="render">
+                            <span class="adults" >
+                                <span class="one" >
+                                    <span v-if="timeshare_years < 2">{{__('No')}}</span>
+                                    <span v-else>@{{timeshare_years}} {{__('Years')}}</span>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu select-guests-dropdown" >
+                        <div class="dropdown-item-row">
+                            <div class="label">{{__('Years')}}</div>
+                            <div class="val">
+                                <span class="btn-minus2" data-input="adults" @click="minusTimeshare()"><i class="icon ion-md-remove"></i></span>
+                                <span class="count-display">@{{ timeshare_years }}</span>
+                                <span class="btn-add2" data-input="adults" @click="addTimeshare()"><i class="icon ion-ios-add"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- hey hey
+            <div class="col-md-2">
+                <div class="form-group" >
+                    <div class="form-content ">
+                        <label class="form-label">{{__("Timeshare")}}</label>
+                    </div>
+                    <div class="select-guests-dropdown show" >
+                        <div class="dropdown-item-row"style="padding:0px; margin:-20px 20px 0px 20px;" >
+                            <span class="btn-minus2" data-input="timeshare_years" @click="minusTimeshare()"><i class="icon ion-md-remove"></i></span>
+                            <span class="count-display">@{{ timeshare_years }}</span>
+                            <span class="btn-add2" data-input="timeshare_years" @click="addTimeshare()"><i class="icon ion-ios-add"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            -->
+            <!-- hey hey -->
+
+            <div class="col-md-2 col-btn">
                 <div class="g-button-submit">
                     <button class="btn btn-primary btn-search" @click="checkAvailability" :class="{'loading':onLoadAvailability}" type="submit">
                         {{__("Check Availability")}}

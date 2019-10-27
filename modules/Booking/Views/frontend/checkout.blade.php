@@ -23,6 +23,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 @section('footer')
     <script src="{{ asset('module/booking/js/checkout.js') }}"></script>

@@ -34,24 +34,30 @@ $lang_local = app()->getLocale();
                 </td>
             @endif
         </tr>
-        @if($booking->start_date && $booking->end_date)
-            <tr>
-                <td class="label">{{__('Start date')}}</td>
-                <td class="val">{{display_date($booking->start_date)}}</td>
-            </tr>
-            <tr>
-                <td class="label">{{__('End date:')}}</td>
-                <td class="val">
-                    {{display_date($booking->end_date)}}
-                </td>
-            </tr>
-            <tr>
-                <td class="label">{{__('Nights:')}}</td>
-                <td class="val">
-                    {{$booking->duration_nights}}
-                </td>
-            </tr>
-        @endif
+        
+        @if (isset($booking->timeshare_years) && $booking->timeshare_years>1)
+            
+        @else
+            @if($booking->start_date && $booking->end_date)
+                <tr>
+                    <td class="label">{{__('Start date')}}</td>
+                    <td class="val">{{display_date($booking->start_date)}}</td>
+                </tr>
+                <tr>
+                    <td class="label">{{__('End date:')}}</td>
+                    <td class="val">
+                        {{display_date($booking->end_date)}}
+                    </td>
+                </tr>
+            @endif
+        @endif    
+        
+        <tr>
+            <td class="label">{{__('Nights:')}}</td>
+            <td class="val">
+                {{$booking->duration_nights}}
+            </td>
+        </tr>
 
         @if($meta = $booking->getMeta('adults'))
             <tr>
@@ -72,10 +78,26 @@ $lang_local = app()->getLocale();
         <tr>
             <td class="label">{{__('Pricing')}}</td>
             <td class="val">
+                
                 <table class="pricing-list" width="100%">
                     @php $rooms = \Modules\Hotel\Models\HotelRoomBooking::getByBookingId($booking->id) @endphp
+                    
                     @if(!empty($rooms))
                         @foreach($rooms as $room)
+                            @if(isset($booking->timeshare_years) && $booking->timeshare_years>1)
+                                <div class="collapse ">
+                                    <tr>
+                                        <td class="label">{{__('Start date')}}</td>
+                                        <td class="val">{{display_date($room->start_date)}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">{{__('End date:')}}</td>
+                                        <td class="val">
+                                            {{display_date($room->end_date)}}
+                                        </td>
+                                    </tr>
+                                </div>
+                            @endif
                             <tr>
                                 <td class="label">{{$room->room->title}} * {{$room->number}}
                                     :</td>

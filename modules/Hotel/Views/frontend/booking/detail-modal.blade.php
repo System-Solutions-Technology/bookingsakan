@@ -1,3 +1,4 @@
+
 <div class="modal fade" id="modal-booking-{{$booking->id}}">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">

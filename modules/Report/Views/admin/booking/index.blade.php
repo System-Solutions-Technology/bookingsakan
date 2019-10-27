@@ -62,7 +62,7 @@
                             <th width="80px"><input type="checkbox" class="check-all"></th>
                             <th>{{__('Service')}}</th>
                             <th>{{__('Customer')}}</th>
-
+                            <th>Timeshare</th>
                             <th>{{__('Total')}}</th>
                             <th width="80px">{{__('Status')}}</th>
                             <th width="150px">{{__('Payment Method')}}</th>
@@ -97,6 +97,14 @@
                                         <li>{{__("Address:")}} {{$row->address}}</li>
                                         <li>{{__("Custom Requirement:")}} {{$row->customer_notes}}</li>
                                     </ul>
+                                </td>
+                                <!--TODO add translations -->
+                                <td>
+                                    @if ($booking->timeshare_years > 1)
+                                        {{$booking->timeshare_years}} Years
+                                    @else
+                                       {{__("No")}} 
+                                    @endif
                                 </td>
                                 <td>{{format_money($row->total)}}</td>
                                 <td>

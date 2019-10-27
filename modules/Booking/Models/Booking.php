@@ -706,8 +706,11 @@ class Booking extends BaseModel
     }
 
     public function getDurationNightsAttribute(){
-
-        $days = max(1,floor((strtotime($this->end_date) - strtotime($this->start_date)) / DAY_IN_SECONDS));
+        if ($this->timeshare_years !== null && $this->timeshare_years>1) {
+            $days = max(1,floor((strtotime($this->end_date) - strtotime($this->start_date)) / DAY_IN_SECONDS)) * $this->timeshare_years;
+        }else {
+            $days = max(1,floor((strtotime($this->end_date) - strtotime($this->start_date)) / DAY_IN_SECONDS));
+        }
 
         return $days;
     }

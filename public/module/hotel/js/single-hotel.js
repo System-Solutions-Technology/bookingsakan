@@ -24,6 +24,8 @@
             start_date_obj:'',
             adults:1,
             children:0,
+            //hey hey chop chop
+            timeshare_years:1,
             allEvents:[],
             rooms:[],
             onLoadAvailability:false,
@@ -220,6 +222,16 @@
 				}
                 // this.handleTotalPrice();
             },
+            addTimeshare(){
+                this.timeshare_years ++ ;
+            },
+            minusTimeshare(){
+                this.timeshare_years -- ;
+                if(this.timeshare_years  <=1){
+                    this.timeshare_years = 1;
+                }
+				
+            },
 			checkAvailability:function () {
                 var me  = this;
                 this.onLoadAvailability = true;
@@ -238,6 +250,8 @@
 						firstLoad:me.firstLoad,
                         adults:this.adults,
                         children:this.children,
+                        //hey hey chop chop
+                        timeshare_years:this.timeshare_years,
                     },
                     method:'post',
                     success:function (json) {
@@ -286,6 +300,8 @@
                         // step:this.step,
                         adults:this.adults,
                         children:this.children,
+                        //hey hey chop chop
+                        timeshare_years:this.timeshare_years,
                         rooms:_.map(this.rooms,function (item) {
                             return _.pick(item,['id','number_selected'])
                         })

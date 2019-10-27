@@ -1,5 +1,4 @@
 @extends('admin.layouts.app')
-
 @section('content')
     <form action="{{route('hotel.admin.store',['id'=>($row->id) ? $row->id : '-1','lang'=>request()->query('lang')])}}" method="post">
         @csrf
@@ -76,6 +75,19 @@
                         </div>
                         @endif
                         @if(is_default_lang())
+                            <!-- hey hey timesharing -->
+
+                            <div class="panel">
+                                <div class="panel-title"><strong>{{__("Timesharing")}}</strong></div>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label>
+                                            <input type="checkbox" name="timeshare" @if($row->timeshare == 1) checked @endif value="1"> {{__("Enable featured")}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- hey hey timesharing -->
                             <div class="panel">
                                 <div class="panel-title"><strong>{{__("Availability")}}</strong></div>
                                 <div class="panel-body">

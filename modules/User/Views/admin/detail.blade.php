@@ -1,5 +1,4 @@
 @extends('admin.layouts.app')
-
 @section('content')
     <form action="{{url('admin/module/user/store/'.($row->id ?? -1))}}" method="post" class="needs-validation" novalidate>
         @csrf

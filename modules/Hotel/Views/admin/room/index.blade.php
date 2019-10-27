@@ -57,6 +57,9 @@
                                         <th> {{ __('Room name')}}</th>
                                         <th width="100px"> {{ __('Number')}}</th>
                                         <th width="100px"> {{ __('Price')}}</th>
+                                        @if ($hotel->timeshare == 1)
+                                            <th width="100px"> {{ __('Timeshare Price')}}</th>
+                                        @endif
                                         <th width="100px"> {{ __('Status')}}</th>
                                         <th width="100px"></th>
                                     </tr>
@@ -64,6 +67,7 @@
                                     <tbody>
                                     @if($rows->total() > 0)
                                         @foreach($rows as $row)
+
                                             <tr class="{{$row->status}}">
                                                 <td><input type="checkbox" name="ids[]" class="check-item" value="{{$row->id}}">
                                                 </td>
@@ -72,6 +76,9 @@
                                                 </td>
                                                 <td>{{$row->number}}</td>
                                                 <td>{{format_money($row->price)}}</td>
+                                                @if ($hotel->timeshare == 1)
+                                                    <td>{{format_money($row->timeshare_price)}}</td>
+                                                @endif
                                                 <td><span class="badge badge-{{ $row->status }}">{{ $row->status }}</span></td>
                                                 <td>
                                                     <a href="{{route('hotel.admin.room.edit',['id'=>$row->id,'hotel_id'=>$hotel->id])}}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> {{__('Edit')}}

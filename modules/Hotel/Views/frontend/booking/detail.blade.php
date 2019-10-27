@@ -29,19 +29,31 @@
         </div>
         <div class="review-section">
             <ul class="review-list">
+
                 @if($booking->start_date)
-                    <li>
-                        <div class="label">{{__('Start date:')}}</div>
-                        <div class="val">
-                            {{display_date($booking->start_date)}}
-                        </div>
-                    </li>
-                    <li>
-                        <div class="label">{{__('End date:')}}</div>
-                        <div class="val">
-                            {{display_date($booking->end_date)}}
-                        </div>
-                    </li>
+                    @if ($booking->timeshare_years < 2)
+                        <!-- add translation for  years and timeshare -->
+                        <li>
+                            <div class="label">{{__('Start date:')}}</div>
+                            <div class="val">
+                                {{display_date($booking->start_date)}}
+                            </div>
+                        </li>
+                        <li>
+                            <div class="label">{{__('End date:')}}</div>
+                            <div class="val">
+                                {{display_date($booking->end_date)}}
+                            </div>
+                        </li>
+                    @else
+                    
+                        <li>
+                            <div class="label">Timeshare</div>
+                            <div class="val">
+                                {{$booking->timeshare_years }} Years
+                            </div>
+                        </li>
+                    @endif
                     <li>
                         <div class="label">{{__('Nights:')}}</div>
                         <div class="val">
@@ -72,13 +84,30 @@
             <ul class="review-list">
                 @php $rooms = \Modules\Hotel\Models\HotelRoomBooking::getByBookingId($booking->id) @endphp
                 @if(!empty($rooms))
+                    <hr>
                     @foreach($rooms as $room)
-                        <li>
-                            <div class="label">{{$room->room->title}} * {{$room->number}}</div>
-                            <div class="val">
-                                {{format_money($room->price * $room->number)}}
-                            </div>
-                        </li>
+                        @if ($booking->timeshare_years > 1)
+
+                            <li>
+                                <!--  hey hey  -->
+                                <div class="label">{{__('Start date:')}}</div>
+                                <div class="val">
+                                    {{display_date($room->start_date)}}
+                                </div>
+                            </li>
+                            <li>
+                                <div class="label">{{__('End date:')}}</div>
+                                <div class="val">
+                                    {{display_date($room->end_date)}}
+                                </div>
+                            </li>
+                        @endif
+                            <li>
+                                <div class="label">{{$room->room->title}} * {{$room->number}}</div>
+                                <div class="val">
+                                    {{format_money($room->price * $room->number)}}
+                                </div>
+                            </li>
                     @endforeach
                 @endif
                 @php $extra_price = $booking->getJsonMeta('extra_price') @endphp

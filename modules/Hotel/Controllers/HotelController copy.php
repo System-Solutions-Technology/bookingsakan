@@ -21,15 +21,10 @@ class HotelController extends Controller
 
     public function index(Request $request)
     {
+
         $is_ajax = $request->query('_ajax');
         $model_hotel = $this->hotelClass::select("bravo_hotels.*");
-        
         $model_hotel->where("bravo_hotels.status", "publish");
-        $timeshare = $request->timeshare_years > 1?1:0;
-        if ($timeshare == 1) {
-            $model_hotel->where('timeshare',$timeshare);
-        }
-
         if (!empty($location_id = $request->query('location_id'))) {
             $location = $this->locationClass::where('id', $location_id)->where("status","publish")->first();
             if(!empty($location)){
@@ -56,7 +51,6 @@ class HotelController extends Controller
         if (is_array($terms) && !empty($terms)) {
             $model_hotel->join('bravo_hotel_term as tt', 'tt.target_id', "bravo_hotels.id")->whereIn('tt.term_id', $terms);
         }
-
 
         $model_hotel->orderBy("id", "desc");
         $model_hotel->groupBy("bravo_hotels.id");
@@ -92,8 +86,6 @@ class HotelController extends Controller
         if ($request->query('_layout')) {
             $layout = $request->query('_layout');
         }
-        //dd($data);
-
         if ($is_ajax) {
             $this->sendSuccess([
                 'html'    => view('Hotel::frontend.layouts.search-map.list-item', $data)->render(),
@@ -112,7 +104,6 @@ class HotelController extends Controller
 
     public function detail(Request $request, $slug)
     {
-
         $row = $this->hotelClass::where('slug', $slug)->where("status", "publish")->with(['location','translations','hasWishList'])->first();;
         if (empty($row)) {
             return redirect('/');
@@ -139,77 +130,31 @@ class HotelController extends Controller
 
     public function checkAvailability(){
         $hotel_id = \request('hotel_id');
-        //test
-        $num_days_in_seconds = strtotime(\request('end_date')) - strtotime(\request('start_date'));
-        //test
-        if(!\request()->input('firstLoad')) {
 
+        if(!\request()->input('firstLoad')) {
             request()->validate([
                 'hotel_id'   => 'required',
                 'start_date' => 'required:date_format:Y-m-d',
                 'end_date'   => 'required:date_format:Y-m-d',
                 'adults'     => 'required',
-                'timeshare_years'     => 'optional',
             ]);
 
-            if($num_days_in_seconds < DAY_IN_SECONDS){
+            if(strtotime(\request('end_date')) - strtotime(\request('start_date')) < DAY_IN_SECONDS){
                 $this->sendError(__("Dates are not valid"));
             }
-            if($num_days_in_seconds > 30*DAY_IN_SECONDS){
+            if(strtotime(\request('end_date')) - strtotime(\request('start_date')) > 30*DAY_IN_SECONDS){
                 $this->sendError(__("Maximum day for booking is 30"));
             }
-            
         }
+
         $hotel = $this->hotelClass::find($hotel_id);
-        //add translation
-        if ($hotel->timeshare == 0 && request('timeshare_years') > 1) {
-            $this->sendError(__("This Hotel doesn't allow Timesharing"));
-        }
         if(empty($hotel_id) or empty($hotel)){
             $this->sendError(__("Hotel not found"));
         }
-        $num_days = $num_days_in_seconds / DAY_IN_SECONDS;
-        //test
-        $new_start_date = request('start_date');
-        $input = request()->input();
-        $rooms;
-        $previous_rooms;
-        $times[] =request('start_date');
-        $times[] =request('end_date');
 
-        if (request('timeshare_years') != null && request('timeshare_years') > 1) {
-            if ($num_days < 7) {
-                $this->sendError(__("Book at least 7 days to use Timeshare"));
-            }
-            for ($k=0; $k < request('timeshare_years'); $k++) { 
-
-                $rooms = $hotel->getRoomsAvailability($input);
-                $new_start_date  = date("Y-m-d", strtotime(date("Y-m-d", strtotime($new_start_date)) . " + 1 year"));
-                $new_end_date  = date("Y-m-d", strtotime(date("Y-m-d", strtotime($new_start_date)) . " + ".$num_days." days"));
-                $input['start_date'] = $new_start_date;
-                $input['end_date'] = $new_end_date;
-                $times[] = $new_start_date;
-                $times[] = $new_end_date;
-                if ($k >0) {
-                    $new_rooms =[];
-                    for ($i=0; $i <count($previous_rooms) ; $i++) { 
-                        for ($j=0; $j <count($rooms) ; $j++) { 
-                            if ($previous_rooms[$i]['id'] == $rooms[$j]['id']) {
-                                $new_rooms[] = $previous_rooms[$i];
-                            }
-                        }
-                    }  
-                    $previous_rooms = $new_rooms;
-                }else{
-                    $previous_rooms = $new_rooms =$rooms;
-                }
-            }
-        }else{
-
-            $new_rooms = $hotel->getRoomsAvailability($input);
-        }
+        $rooms = $hotel->getRoomsAvailability(request()->input());
         $this->sendSuccess([
-            'rooms'=>$new_rooms
+            'rooms'=>$rooms
         ]);
     }
 }

@@ -12,15 +12,25 @@
             {{__("[Deleted]")}}
         @endif
     </td>
+    <!-- hey hey timeshare -->
     <td class="a-hidden">{{display_date($booking->created_at)}}</td>
     <td class="a-hidden">
-        {{__("Check in")}} : {{display_date($booking->start_date)}} <br>
-        {{__("Check out")}} : {{display_date($booking->end_date)}} <br>
+            {{__("Check in")}} : {{display_date($booking->start_date)}} <br>
+        @if (isset($booking->timeshare_years) && $booking->timeshare_years >1)
+            {{__("Years")}} : {{$booking->timeshare_years}} <br>
+            {{__("Duration")}} : {{$booking->duration_nights}} <br>
+        @else
+            {{__("Check out")}} : {{display_date($booking->end_date)}} <br>
+        @endif
         @php $rooms = \Modules\Hotel\Models\HotelRoomBooking::getByBookingId($booking->id) @endphp
         @if(!empty($rooms))
-            @foreach($rooms as $room)
+            @if (isset($booking->timeshare_years) && $booking->timeshare_years >1)
+                <div class="label">{{$rooms->first()->room->title}} * {{$rooms->first()->number}} = {{format_money($rooms->first()->price * $rooms->first()->number * $booking->timeshare_years)}} </div>
+            @else
+                @foreach($rooms as $room)
                     <div class="label">{{$room->room->title}} * {{$room->number}} = {{format_money($room->price * $room->number)}} </div>
-            @endforeach
+                @endforeach
+            @endif
         @endif
     </td>
     <td>{{format_money($booking->total)}}</td>

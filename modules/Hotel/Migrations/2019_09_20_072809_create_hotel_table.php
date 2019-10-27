@@ -23,6 +23,7 @@ class CreateHotelTable extends Migration
             $table->integer('location_id')->nullable();
             $table->string('address', 255)->nullable();
             $table->string('map_lat', 20)->nullable();
+            $table->boolean('timeshare')->default(0);
             $table->string('map_lng', 20)->nullable();
             $table->integer('map_zoom')->nullable();
             $table->tinyInteger('is_featured')->nullable();
@@ -32,6 +33,7 @@ class CreateHotelTable extends Migration
             $table->smallInteger('star_rate')->nullable();
             //Price
             $table->decimal('price', 12, 2)->nullable();
+            //$table->decimal('timeshare_price', 12, 2)->nullable();
             $table->string('check_in_time', 255)->nullable();
             $table->string('check_out_time', 255)->nullable();
             $table->smallInteger('allow_full_day')->nullable();
@@ -87,6 +89,7 @@ class CreateHotelTable extends Migration
 
             //Price
             $table->decimal('price', 12, 2)->nullable();
+            $table->decimal('timeshare_price', 12, 2)->nullable();
             $table->bigInteger('parent_id')->nullable();
 
             $table->smallInteger('number')->nullable();

@@ -70,18 +70,41 @@ class HotelRoom extends Bookable
         if( !empty($filters['children']) and $this->children < $filters['children'] ){
             return false;
         }
-
+        
         $roomDates =  $this->getDatesInRange($filters['start_date'],$filters['end_date']);
         $allDates = [];
         $tmp_price = 0;
         $tmp_night = 0;
-        for($i = strtotime($filters['start_date']); $i < strtotime($filters['end_date']); $i+= DAY_IN_SECONDS)
-        {
-            $allDates[date('Y-m-d',$i)] = [
-                'number'=>$this->number,
-                'price'=>$this->price
-            ];
-            $tmp_night++;
+
+        if (array_key_exists('timeshare_years',$filters)  && $filters['timeshare_years'] > 1) {
+            
+            $start_date = $filters['start_date'];
+            $end_date = $filters['end_date'];
+            for ($k=0; $k <$filters['timeshare_years']; $k++) { 
+                $num_days = (strtotime($end_date) - strtotime($start_date))  / DAY_IN_SECONDS;
+                for($i = strtotime($start_date); $i < strtotime($end_date); $i+= DAY_IN_SECONDS)
+                {
+                    
+                    $allDates[date('Y-m-d',$i)] = [
+                        'number'=>$this->number,
+                        'price'=>$this->price,
+                        'timeshare_price'=>$this->timeshare_price
+                    ];
+                    $tmp_night++;
+                }
+                $start_date  = date("Y-m-d", strtotime(date("Y-m-d", strtotime($start_date)) . " + 1 year"));
+                $end_date  = date("Y-m-d", strtotime(date("Y-m-d", strtotime($start_date)) . " + ".$num_days." days"));
+            }
+        }else{
+            for($i = strtotime($filters['start_date']); $i < strtotime($filters['end_date']); $i+= DAY_IN_SECONDS)
+            {
+                $allDates[date('Y-m-d',$i)] = [
+                    'number'=>$this->number,
+                    'price'=>$this->price,
+                    'timeshare_price'=>$this->timeshare_price
+                ];
+                $tmp_night++;
+            }
         }
 
         if(!empty($roomDates))
@@ -91,11 +114,11 @@ class HotelRoom extends Bookable
                 if(!$row->active or !$row->number or !$row->price) return false;
                 $allDates[date('Y-m-d',strtotime($row->start_date))] = [
                     'number'=>$row->number,
-                    'price'=>$row->price
+                    'price'=>$row->price,
+                    'timeshare_price'=>$this->timeshare_price
                 ];
             }
         }
-
         $roomBookings = $this->getBookingsInRange($filters['start_date'],$filters['end_date']);
         if(!empty($roomBookings)){
             foreach ($roomBookings as $roomBooking){
@@ -110,14 +133,12 @@ class HotelRoom extends Bookable
                 }
             }
         }
-
         $this->tmp_number = min(array_column($allDates,'number'));
         if(empty($this->tmp_number)) return false;
-
         $this->tmp_price = array_sum(array_column($allDates,'price'));
+        $this->tmp_timeshare_price = array_sum(array_column($allDates,'timeshare_price'));
         $this->tmp_dates = $allDates;
         $this->tmp_nights = $tmp_night;
-
         return true;
     }
 
@@ -133,7 +154,7 @@ class HotelRoom extends Bookable
 
     public function getBookingsInRange($from, $to)
     {
-       return $this->roomBookingClass::query()->where('room_id',$this->id)->active()->inRange($from,$to)->get();
+        return $this->roomBookingClass::query()->where('room_id',$this->id)->inRange($from,$to)->active2()->get();
     }
 
 
