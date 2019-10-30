@@ -19,12 +19,4 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 
-/resources/admin/scss/css
-/public/css
-/public/module/user/css
-/public/module/tour/css
-/public/module/news/css
-/public/module/media/css
-/public/module/booking/css
 /storage/installed
-plugins/Hotel/Resources/assets/css/
