@@ -98,34 +98,61 @@ class VendorController extends FrontendController
                 $row->status = "pending";
             }
         }
-        $dataKeys = [
-            'title',
-            'content',
-            'slug',
-            'video',
-            'image_id',
-            'banner_image_id',
-            'gallery',
-            'is_featured',
-            'policy',
-            'location_id',
-            'address',
-            'map_lat',
-            'map_lng',
-            'map_zoom',
-            'star_rate',
-            'price',
-            'sale_price',
-            'check_in_time',
-            'check_out_time',
-            'allow_full_day',
-        ];
+        $requestData = $request->all();
+
+        if ($request->timeshare !== null) {
+            $requestData['timeshare'] = 1;
+            $dataKeys = [
+                'title',
+                'content',
+                'slug',
+                'video',
+                'image_id',
+                'banner_image_id',
+                'gallery',
+                'is_featured',
+                'policy',
+                'location_id',
+                'address',
+                'map_lat',
+                'map_lng',
+                'map_zoom',
+                'star_rate',
+                'price',
+                'sale_price',
+                'check_in_time',
+                'check_out_time',
+                'allow_full_day',
+                'timeshare',
+            ];
+        }else{
+            $dataKeys = [
+                'title',
+                'content',
+                'slug',
+                'video',
+                'image_id',
+                'banner_image_id',
+                'gallery',
+                'is_featured',
+                'policy',
+                'location_id',
+                'address',
+                'map_lat',
+                'map_lng',
+                'map_zoom',
+                'star_rate',
+                'price',
+                'sale_price',
+                'check_in_time',
+                'check_out_time',
+                'allow_full_day',
+            ];
+        }
         if($this->hasPermission('hotel_manage_others')){
             $dataKeys[] = 'create_user';
         }
-
-        $row->fillByAttr($dataKeys,$request->input());
-
+        $row->fillByAttr($dataKeys,$requestData);
         $res = $row->saveOriginOrTranslation($request->input('lang'),true);
 
         if ($res) {

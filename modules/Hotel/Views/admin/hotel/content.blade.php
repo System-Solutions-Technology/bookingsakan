@@ -1,6 +1,20 @@
 <div class="panel">
+
     <div class="panel-title"><strong>{{__("Hotel Content")}}</strong></div>
     <div class="panel-body">
+        
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>{{__("Timeshare")}}</label>
+                    <input type="checkbox" 
+                        @if ($row->timeshare == 1)
+                            checked
+                        @endif
+                    placeholder="" name="timeshare" >
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <label>{{__("Title")}}</label>
             <input type="text" value="{{$translation->title}}" placeholder="{{__("Name of the hotel")}}" name="title" class="form-control">
@@ -37,6 +51,7 @@
     <div class="panel-body">
         @if(is_default_lang())
             <div class="row">
+                
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>{{__("Hotel rating standard")}}</label>
@@ -45,6 +60,7 @@
                 </div>
             </div>
         @endif
+       
         <div class="form-group-item">
             <label class="control-label">{{__('Policy')}}</label>
             <div class="g-items-header">
