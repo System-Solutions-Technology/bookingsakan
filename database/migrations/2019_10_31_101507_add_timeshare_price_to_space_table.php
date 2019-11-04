@@ -14,7 +14,7 @@ class AddTimesharePriceToSpaceTable extends Migration
     public function up()
     {
         Schema::table('bravo_spaces', function (Blueprint $table) {
-            $table->decimal('timeshare_price', 12, 2)->nullable();
+            $table->decimal('timeshare_price', 12, 2)->nullable()->default(0);
         });
     }
 
