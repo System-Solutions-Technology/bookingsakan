@@ -28,6 +28,25 @@
                     </div>
                     <input type="text" class="start_date" ref="start_date" style="height: 1px; visibility: hidden">
                 </div>
+                @if($row->timeshare_price > 0)
+                <div class="" >
+                    <div class="form-group form-guest-search">
+                        <div class="guest-wrapper d-flex justify-content-between align-items-center">
+                            <div class="flex-grow-1">
+                                <label>{{__('Timeshare')}}</label>
+                                <div class="render check-in-render">{{__('Years')}}</div>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div class="input-number-group">
+                                    <i class="icon ion-ios-remove-circle-outline" @click="minusTimeshareYear()"></i>
+                                    <span class="input">@{{timeshare}}</span>
+                                    <i class="icon ion-ios-add-circle-outline" @click="addTimeshareYear()"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 <div class="" >
                     <div class="form-group form-guest-search">
                         <div class="guest-wrapper d-flex justify-content-between align-items-center">

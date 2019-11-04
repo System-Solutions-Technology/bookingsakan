@@ -119,6 +119,7 @@ class ManageSpaceController extends FrontendController
             'default_state',
             'price',
             'sale_price',
+            'timeshare_price',
             'max_guests',
             'enable_extra_price',
             'extra_price',

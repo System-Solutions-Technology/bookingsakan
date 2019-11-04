@@ -1,7 +1,7 @@
 <form action="{{ route("space.search") }}" class="form bravo_form" method="get">
     <div class="g-field-search">
         <div class="row">
-            <div class="col-md-4 border-right">
+            <div class="col-md-3 border-right">
                 <div class="form-group">
                     <i class="field-icon fa icofont-map"></i>
                     <div class="form-content">
@@ -52,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 border-right dropdown form-select-guests">
+            <div class="col-md-3 border-right dropdown form-select-guests">
                 <div class="form-group">
                     <i class="field-icon icofont-travelling"></i>
                     <div class="form-content dropdown-toggle" data-toggle="dropdown">
@@ -91,6 +91,41 @@
                                 <span class="btn-add" data-input="children"><i class="icon ion-ios-add"></i></span>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 border-right dropdown form-select-guests">
+                <div class="form-group">
+                    <i class="field-icon icofont-users"></i>
+                    <div class="form-content dropdown-toggle" data-toggle="dropdown">
+                        <div class="wrapper-more">
+                            <label>{{__('Timeshare')}}</label>
+                            @php
+                                $timeshare_years = request()->query('timeshare_years',1);
+                            @endphp
+                            <div class="render">
+                                <span class="timeshare_years" >
+                                    <span class="one @if($timeshare_years >1) d-none @endif">
+                                        {{__('1 Year')}}
+                                    </span>
+                                    <span class="@if($timeshare_years <= 1) d-none @endif multi" data-html="{{__(':count Years')}}">
+                                        {{__(':count Years',['count'=>request()->query('timeshare_years',1)])}}
+                                    </span>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu select-guests-dropdown" >
+                        <input type="hidden" name="timeshare_years" value="{{request()->query('timeshare_years',1)}}" min="1" max="10">
+                        <div class="dropdown-item-row">
+                            <div class="label">{{__('Years')}}</div>
+                            <div class="val">
+                                <span class="btn-minus" data-input="timeshare_years"><i class="icon ion-md-remove"></i></span>
+                                <span class="count-display">{{request()->query('timeshare_years',1)}}</span>
+                                <span class="btn-add" data-input="timeshare_years"><i class="icon ion-ios-add"></i></span>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>

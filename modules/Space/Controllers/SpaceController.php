@@ -54,7 +54,10 @@ class SpaceController extends Controller
         if($max_guests){
             $model_space->where('max_guests','>=',$max_guests);
         }
-
+        $timeshare_years = (int)($request->query('timeshare_years'));
+        if($timeshare_years > 1)  {
+            $model_space->where('timeshare_price','>',0);
+        }
         $list = $model_space->with(['location','hasWishList','translations'])->paginate(9);
         $markers = [];
         if (!empty($list)) {

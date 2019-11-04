@@ -100,11 +100,13 @@ class AvailabilityController extends FrontendController{
                 'id'=>rand(0,999),
                 'active'=>0,
                 'price'=>(!empty($space->sale_price) and $space->sale_price > 0 and $space->sale_price < $space->price) ? $space->sale_price : $space->price,
+                'timeshare_price'=>$space->timeshare_price,
                 'is_instant'=>$space->is_instant,
                 'is_default'=>true,
                 'textColor'=>'#2791fe'
             ];
             $date['price_html'] = format_money($date['price']);
+            $date['timeshare_price_html'] = format_money($date['timeshare_price']);
             $date['title'] = $date['event']  = $date['price_html'];
             $date['start'] = $date['end'] = date('Y-m-d',$i);
 
@@ -138,31 +140,41 @@ class AvailabilityController extends FrontendController{
                 }else{
                     $row->classNames = ['active-event'];
                     $row->active = 1;
+                    $row->timeshare_price =$space->timeshare_price;
                     if($row->is_instant){
                         $row->title = '<i class="fa fa-bolt"></i> '.$row->title;
                     }
                 }
-
                 $allDates[date('Y-m-d',strtotime($row->start_date))] = $row->toArray();
 
             }
         }
+   
 
-        $bookings = $this->bookingClass::getBookingInRanges($space->id,$space->type,$request->query('start'),$request->query('end'));
-        if(!empty($bookings))
-        {
-            foreach ($bookings as $booking){
-                for($i = strtotime($booking->start_date); $i <= strtotime($booking->end_date); $i+= DAY_IN_SECONDS){
-                    if(isset($allDates[date('Y-m-d',$i)])){
-                        $allDates[date('Y-m-d',$i)]['active'] = 0;
-                        $allDates[date('Y-m-d',$i)]['event'] = __('Full Book');
-                        $allDates[date('Y-m-d',$i)]['title'] = __('Full Book');
-                        $allDates[date('Y-m-d',$i)]['classNames'] = ['full-book-event'];
+        for ($k=0; $k < 10; $k++) {
+            $new_start_date = date("Y-m-d H:i:s",strtotime("-".$k." year",strtotime($request->query('start'))));
+            $new_end_date = date("Y-m-d H:i:s",strtotime("-".$k." year",strtotime($request->query('end'))));
+
+            $bookings = $this->bookingClass::getBookingInRanges($space->id,$space->type,$new_start_date,$new_end_date);
+            if(!empty($bookings))
+            {
+                foreach ($bookings as $booking){
+                    if($booking->timeshare_years > $k){
+                        $booking_start_date = strtotime("+".$k." year",strtotime($booking->start_date));
+                        $booking_end_date = strtotime("+".$k." year",strtotime($booking->end_date));
+                        for($i = $booking_start_date; $i <= $booking_end_date; $i+= DAY_IN_SECONDS){
+                            if(isset($allDates[date('Y-m-d',$i)])){
+                                $allDates[date('Y-m-d',$i)]['active'] = 0;
+                                $allDates[date('Y-m-d',$i)]['event'] = __('Full Book');
+                                $allDates[date('Y-m-d',$i)]['title'] = __('Full Book');
+                                $allDates[date('Y-m-d',$i)]['classNames'] = ['full-book-event'];
+                            }
+                        }
                     }
                 }
             }
         }
-
+        
         $data = array_values($allDates);
 
         return response()->json($data);

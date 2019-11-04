@@ -20,6 +20,13 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="form-group">
+                        <label class="control-label">{{__("Timeshare Price")}}</label>
+                        <input type="number" step="any" name="timeshare_price" class="form-control" value="{{$row->timeshare_price}}" placeholder="{{__("Space Sale Price")}}">
+                        <span><i>{{__("Leave it 0 to disable timeshare for this space")}}</i></span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
                         <label class="control-label">{{__("Max Guests")}}</label>
                         <input type="number" step="any" name="max_guests" class="form-control" value="{{$row->max_guests}}" >
                     </div>

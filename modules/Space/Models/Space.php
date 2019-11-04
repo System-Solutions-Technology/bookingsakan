@@ -212,9 +212,17 @@ class Space extends Bookable
         $start_date = new \DateTime($request->input('start_date'));
         $end_date = new \DateTime($request->input('end_date'));
         $extra_price_input = $request->input('extra_price');
+        $timeshare_years = $request->input('timeshare_years');
         $extra_price = [];
+        $total = 0;
 
-        $total = $this->getPriceInRanges($request->input('start_date'),$request->input('end_date'));
+        if($timeshare_years > 1){
+            $days = max(1,floor((strtotime($request->input('end_date')) - strtotime($request->input('start_date'))) / DAY_IN_SECONDS));
+            $total = $days * $timeshare_years * $this->timeshare_price;
+        }
+        else{
+            $total = $this->getPriceInRanges($request->input('start_date'),$request->input('end_date'));
+        }
 
         $duration_in_hour = max(1,ceil(($end_date->getTimestamp() - $start_date->getTimestamp()) / HOUR_IN_SECONDS ) );
 
@@ -239,6 +247,7 @@ class Space extends Bookable
                         if (!empty($type['per_person'])) {
                             $type_total *= $total_guests;
                         }
+                        $type_total *= $timeshare_years;
                         $type['total'] = $type_total;
                         $total += $type_total;
                         $extra_price[] = $type;
@@ -254,9 +263,9 @@ class Space extends Bookable
             $lists = json_decode($list_fees,true);
             foreach ($lists as $item){
                 if(!empty($item['per_person']) and $item['per_person'] == "on"){
-                    $total += $item['price'] * $total_guests;
+                    $total += $item['price'] * $total_guests * $timeshare_years;
                 }else{
-                    $total += $item['price'];
+                    $total += $item['price'] * $timeshare_years;
                 }
             }
         }
@@ -276,6 +285,7 @@ class Space extends Bookable
         $booking->end_date = $end_date->format('Y-m-d H:i:s');
         $booking->buyer_fees = $list_fees ?? '';
         $booking->total_before_fees = $total_before_fees;
+        $booking->timeshare_years = $timeshare_years;
         $booking->calculateCommission();
 
         $check = $booking->save();
@@ -340,7 +350,8 @@ class Space extends Bookable
             'adults'     => 'required|integer|min:1',
             'children'     => 'required|integer|min:0',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'required|date_format:Y-m-d'
+            'end_date' => 'required|date_format:Y-m-d',
+            'timeshare_years' => 'integer|min:1|max:10'
         ];
 
         // Validation
@@ -363,9 +374,10 @@ class Space extends Bookable
         {
             $this->sendError(__("Your selected dates are not valid"));
         }
-
+        $timeshare_years = $request->input('timeshare_years');
+        
         // Validate Date and Booking
-        if(!$this->isAvailableInRanges($start_date,$end_date)){
+        if(!$this->isAvailableInRangesTimeshare($start_date,$end_date,$timeshare_years)){
             $this->sendError(__("This space is not available at selected dates"));
         }
 
@@ -406,7 +418,61 @@ class Space extends Bookable
 
         return true;
     }
+    public function isAvailableInRangesTimeshare($start_date,$end_date,$timeshare_years){
+        
+        $days = max(1,floor((strtotime($end_date) - strtotime($start_date)) / DAY_IN_SECONDS));
 
+        for ($k=0; $k < $timeshare_years; $k++) {
+
+            $new_start_date = date("Y-m-d H:i:s",strtotime("+".$k." year",strtotime($start_date)));
+            $new_end_date = date("Y-m-d H:i:s",strtotime("+".$k." year",strtotime($end_date)));
+
+            if($this->default_state)
+            {
+                $notAvailableDates = $this->spaceDateClass::query()->where([
+                    ['start_date','>=',$new_start_date],
+                    ['end_date','<=',$new_end_date],
+                    ['active','0']
+                ])->count('id');
+                if($notAvailableDates) return false;
+
+            }else{
+                $availableDates = $this->spaceDateClass::query()->where([
+                    ['start_date','>=',$new_start_date],
+                    ['end_date','<=',$new_end_date],
+                    ['active','=',1]
+                ])->count('id');
+                if($availableDates <= $days) return false;
+            }
+
+            // Check Order
+            $bookingInRanges = $this->bookingClass::getAcceptedBookingQuery($this->id,$this->type)->where([
+                ['end_date','>=',$new_start_date],
+                ['start_date','<=',$new_end_date],
+            ])->count('id');
+            if($bookingInRanges){
+                return false;
+            }
+        }
+        
+        // check dates backwards for timeshare (10 years)
+        for ($k=1; $k <= 10; $k++) {
+
+            $new_start_date = date("Y-m-d H:i:s",strtotime("-".$k." year",strtotime($start_date)));
+            $new_end_date = date("Y-m-d H:i:s",strtotime("-".$k." year",strtotime($end_date)));
+
+            $timeshareBookingInRanges = $this->bookingClass::getAcceptedBookingQuery($this->id,$this->type)->where([
+                ['end_date','>=',$new_start_date],
+                ['start_date','<=',$new_end_date],
+                ['timeshare_years', '>',$k]
+            ])->count('id');
+            if($timeshareBookingInRanges){
+                return false;
+            }
+        }
+
+        return true;
+    }
     public function getBookingData()
     {
         if (!empty($start = request()->input('start'))) {
@@ -426,6 +492,7 @@ class Space extends Bookable
             'start_date'      => request()->input('start') ?? "",
             'start_date_html' => $date_html ?? __('Please select'),
             'end_date'        => request()->input('end') ?? "",
+            'timeshare_years' => request()->input('timeshare_years')
         ];
         if(!empty( $adults = request()->input('adults') )){
             $booking_data['adults'] = $adults;

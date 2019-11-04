@@ -49,6 +49,14 @@
                         </div>
                     </li>
                 @endif
+                @if($booking->timeshare_years > 1)
+                    <li>
+                        <div class="label">{{__('Timeshare:')}}</div>
+                        <div class="val">
+                            {{$booking->timeshare_years.' year(s)'}}
+                        </div>
+                    </li>
+                @endif
                 @if($meta = $booking->getMeta('adults'))
                     <li>
                         <div class="label">{{__('Adults:')}}</div>
@@ -86,7 +94,7 @@
                 @php $extra_price = $booking->getJsonMeta('extra_price') @endphp
                 @if(!empty($extra_price))
                     <li>
-                        <div class="label-title"><strong>{{__("Extra Prices:")}}</strong></div>
+                        <div class="label-title"><strong>{{__("Extra Prices Included:")}}</strong></div>
                     </li>
                     <li class="no-flex">
                         <ul>
@@ -109,6 +117,9 @@
                         <li>
                             <div class="label">
                                 {{$buyer_fee['name_'.$lang_local] ?? $buyer_fee['name']}}
+                                @if($booking->timeshare_years > 1)
+                                    * {{$booking->timeshare_years}} {{__('Years:')}}
+                                @endif
                                 <i class="icofont-info-circle" data-toggle="tooltip" data-placement="top" title="{{ $buyer_fee['desc_'.$lang_local] ?? $buyer_fee['desc'] }}"></i>
                                 @if(!empty($buyer_fee['per_person']) and $buyer_fee['per_person'] == "on")
                                     : {{$booking->total_guests}} * {{format_money( $buyer_fee['price'] )}}
@@ -116,9 +127,9 @@
                             </div>
                             <div class="val">
                                 @if(!empty($buyer_fee['per_person']) and $buyer_fee['per_person'] == "on")
-                                    {{ format_money( $buyer_fee['price'] * $booking->total_guests ) }}
+                                    {{ format_money( $buyer_fee['price'] * $booking->total_guests * $booking->timeshare_years ) }}
                                 @else
-                                {{ format_money($buyer_fee['price']) }}
+                                {{ format_money($buyer_fee['price'] * $booking->timeshare_years) }}
                                 @endif
                             </div>
                         </li>

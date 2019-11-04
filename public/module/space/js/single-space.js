@@ -24,6 +24,7 @@
             start_date_obj:'',
             adults:1,
             children:0,
+            timeshare:1,
             allEvents:[],
         },
         watch:{
@@ -55,27 +56,29 @@
                     var startDate = new Date(me.start_date).getTime();
                     var endDate = new Date(me.end_date).getTime();
                     var isBook = true;
+                    var timeshare = this.timeshare;
+                    var isTimeshare = timeshare > 1;
                     var guests = me.children + me.adults;
-
                     for (var ix in me.allEvents) {
                         var item = me.allEvents[ix];
                         var cur_date = new Date(item.start).getTime();
                         if (startDate == endDate) {
                             if (cur_date >= startDate && cur_date <= endDate) {
-                                total_price += parseFloat(item.price);
+                                total_price += parseFloat(isTimeshare ? item.timeshare_price : item.price);
                                 if (item.active === 0) {
                                     isBook = false
                                 }
                             }
                         } else {
                             if (cur_date >= startDate && cur_date < endDate) {
-                                total_price += parseFloat(item.price);
+                                total_price += parseFloat(isTimeshare ? item.timeshare_price : item.price);
                                 if (item.active === 0) {
                                     isBook = false
                                 }
                             }
                         }
                     }
+                    console.log(total_price);
                     var duration_in_hour = moment(endDate).diff(moment(startDate), 'hours');
                     var duration_in_day = moment(endDate).diff(moment(startDate), 'days');
                     for (var ix in me.extra_price) {
@@ -111,7 +114,9 @@
                         }
                         total_price += type_total;
                     }
-
+                    if(isTimeshare){
+                        total_price = total_price * timeshare;
+                    }
                     if (isBook === false || guests === 0) {
                         return 0;
                     } else {
@@ -279,6 +284,16 @@
 				}
                 // this.handleTotalPrice();
             },
+            addTimeshareYear(){
+                if(this.timeshare < 10){
+                    this.timeshare++;
+                }
+            },
+            minusTimeshareYear(){
+                if(this.timeshare >=2){
+                    this.timeshare--;
+                }
+            },
             doSubmit:function (e) {
                 e.preventDefault();
                 if(this.onSubmit) return false;
@@ -305,7 +320,8 @@
                         extra_price:this.extra_price,
                         // step:this.step,
                         adults:this.adults,
-                        children:this.children
+                        children:this.children,
+                        timeshare_years:this.timeshare
                     },
                     dataType:'json',
                     type:'post',
