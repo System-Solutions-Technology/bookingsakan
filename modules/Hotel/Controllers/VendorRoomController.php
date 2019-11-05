@@ -193,19 +193,34 @@ class VendorRoomController extends FrontendController
             $row = new $this->roomClass();
             $row->status = "publish";
         }
-
-        $dataKeys = [
-            'title',
-            'content',
-            'image_id',
-            'gallery',
-            'price',
-            'number',
-            'beds',
-            'size',
-            'adults',
-            'children',
-        ];
+        if ($request->timeshare_price > 0) {
+            $dataKeys = [
+                'title',
+                'content',
+                'image_id',
+                'gallery',
+                'price',
+                'number',
+                'beds',
+                'size',
+                'adults',
+                'children',
+                'timeshare_price',
+            ];
+        }else{
+            $dataKeys = [
+                'title',
+                'content',
+                'image_id',
+                'gallery',
+                'price',
+                'number',
+                'beds',
+                'size',
+                'adults',
+                'children',
+            ];
+        }
 
         $row->fillByAttr($dataKeys,$request->input());
 
