@@ -58,8 +58,7 @@ class UserController extends FrontendController
     public function profile(Request $request)
     {
         $user = Auth::user();
-        if (!empty($request->input())) {
-
+        if (!empty($request->input()) && isset($request->input()['first_name'])) {
             $request->validate([
                 'first_name'              => 'required|max:255',
                 'last_name'              => 'required|max:255',
@@ -92,7 +91,7 @@ class UserController extends FrontendController
 
     public function changePassword(Request $request)
     {
-        if (!empty($request->input())) {
+        if (!empty($request->input()) && isset($request->input()['current-password'])) {
             if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
                 // The passwords matches
                 return redirect()->back()->with("error", __("Your current password does not matches with the password you provided. Please try again."));
