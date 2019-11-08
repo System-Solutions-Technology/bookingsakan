@@ -17,7 +17,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
-                        @include('Space::frontend.layouts.search.form-search')
+                        @include('Space::frontend.layouts.search.form-search_timeshare')
                     </div>
                 </div>
             </div>
