@@ -110,6 +110,98 @@ class HotelController extends Controller
         return view('Hotel::frontend.search', $data);
     }
 
+    public function timeshare(Request $request){
+        $is_ajax = $request->query('_ajax');
+        $model_hotel = $this->hotelClass::select("bravo_hotels.*");
+        
+        $model_hotel->where("bravo_hotels.status", "publish");
+        // $timeshare = $request->timeshare_years > 1?1:0;
+        // if ($timeshare == 1) {
+            $model_hotel->where('timeshare',1);
+        // }
+
+        if (!empty($location_id = $request->query('location_id'))) {
+            $location = $this->locationClass::where('id', $location_id)->where("status","publish")->first();
+            if(!empty($location)){
+                $model_hotel->join('bravo_locations', function ($join) use ($location) {
+                    $join->on('bravo_locations.id', '=', 'bravo_hotels.location_id')
+                        ->where('bravo_locations._lft', '>=', $location->_lft)
+                        ->where('bravo_locations._rgt', '<=', $location->_rgt);
+                });
+            }
+        }
+        if (!empty($price_range = $request->query('price_range'))) {
+            $pri_from = explode(";", $price_range)[0];
+            $pri_to = explode(";", $price_range)[1];
+            $raw_sql_min_max = "(  bravo_hotels.price >= ? ) 
+                            AND (  bravo_hotels.price <= ? )";
+            $model_hotel->WhereRaw($raw_sql_min_max,[$pri_from,$pri_to]);
+        }
+
+        if (!empty($star_rate = $request->query('star_rate'))) {
+            $model_hotel->WhereIn('star_rate',$star_rate);
+        }
+
+        $terms = $request->query('terms');
+        if (is_array($terms) && !empty($terms)) {
+            $model_hotel->join('bravo_hotel_term as tt', 'tt.target_id', "bravo_hotels.id")->whereIn('tt.term_id', $terms);
+        }
+
+
+        $model_hotel->orderBy("id", "desc");
+        $model_hotel->groupBy("bravo_hotels.id");
+
+        $list = $model_hotel->with(['location','hasWishList','translations','termsByAttributeInListingPage'])->paginate(9);
+        $markers = [];
+        if (!empty($list)) {
+            foreach ($list as $row) {
+                $markers[] = [
+                    "id"      => $row->id,
+                    "title"   => $row->title,
+                    "lat"     => (float)$row->map_lat,
+                    "lng"     => (float)$row->map_lng,
+                    "gallery" => $row->getGallery(true),
+                    "infobox" => view('Hotel::frontend.layouts.search.loop-grid', ['row' => $row,'disable_lazyload'=>1,'wrap_class'=>'infobox-item'])->render(),
+                    'marker'  => url('images/icons/png/pin.png'),
+                ];
+            }
+        }
+        $limit_location = 15;
+        if( empty(setting_item("hotel_location_search_style")) or setting_item("hotel_location_search_style") == "normal" ){
+            $limit_location = 1000;
+        }
+        $data = [
+            'rows'               => $list,
+            'list_location'      => $this->locationClass::where('status', 'publish')->limit($limit_location)->with(['translations'])->get()->toTree(),
+            'hotel_min_max_price' => $this->hotelClass::getMinMaxPrice(),
+            'markers'            => $markers,
+            "blank"              => 1,
+            "seo_meta"           => $this->hotelClass::getSeoMetaForPageList()
+        ];
+        $layout = setting_item("hotel_layout_search", 'normal');
+        if ($request->query('_layout')) {
+            $layout = $request->query('_layout');
+        }
+        //dd($data);
+
+        if ($is_ajax) {
+            $this->sendSuccess([
+                'html'    => view('Hotel::frontend.layouts.search-map.list-item', $data)->render(),
+                "markers" => $data['markers']
+            ]);
+        }
+        $data['attributes'] = Attributes::where('service', 'hotel')->with(['terms','translations'])->get();
+
+        if ($layout == "map") {
+            $data['body_class'] = 'has-search-map';
+            $data['html_class'] = 'full-page';
+            return view('Hotel::frontend.search-map', $data);
+        }
+        // dd($data);
+        return view('Hotel::frontend.search_timeshare', $data);
+        return "<h1>hey</h1>";
+    }
+
     public function detail(Request $request, $slug)
     {
 

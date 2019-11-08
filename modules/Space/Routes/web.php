@@ -3,6 +3,7 @@ use \Illuminate\Support\Facades\Route;
 
 Route::group(['prefix'=>config('space.space_route_prefix')],function(){
     Route::get('/','SpaceController@index')->name('space.search'); // Search
+    Route::get('/timeshare','SpaceController@timeshare')->name('space.search_timeshare'); // Search
     Route::get('/{slug}','SpaceController@detail')->name('space.detail');// Detail
 });
 

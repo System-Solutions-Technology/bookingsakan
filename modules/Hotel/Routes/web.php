@@ -3,6 +3,7 @@ use \Illuminate\Support\Facades\Route;
 
 Route::group(['prefix'=>config('hotel.hotel_route_prefix')],function(){
     Route::get('/','HotelController@index')->name('hotel.search'); // Search
+    Route::get('/timeshare','HotelController@timeshare')->name('hotel.timeshare'); // Search
     Route::get('/{slug}','HotelController@detail')->name('hotel.detail');// Detail
 });
 
