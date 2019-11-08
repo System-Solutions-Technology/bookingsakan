@@ -174,6 +174,7 @@ class SpaceController extends AdminController
             'max_guests',
             'enable_extra_price',
             'extra_price',
+            'timeshare_price',
             'is_featured',
             'default_state',
         ];
