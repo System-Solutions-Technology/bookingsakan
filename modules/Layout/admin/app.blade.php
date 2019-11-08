@@ -108,12 +108,12 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-6 copy-right" >
-                        {{date('Y')}} &copy; Booking Core by <a href="https://www.bookingcore.org" target="_blank">BookingCore Team</a>
+                        {{date('Y')}} &copy; Booking Sakan by <a href="https://www.sstech.com.tr" target="_blank">SSTECH</a>
                     </div>
                     <div class="col-md-6">
                         <div class="text-md-right footer-links d-none d-sm-block">
-                            <a href="https://www.bookingcore.org" target="_blank">About Us</a>
-                            <a href="https://m.me/bookingcore" target="_blank">Contact Us</a>
+                            <a href="https://www.sstech.com.tr" target="_blank">About Us</a>
+                            <a href="https://www.sstech.com.tr" target="_blank">Contact Us</a>
                         </div>
                     </div>
                 </div>

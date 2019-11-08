@@ -29,6 +29,7 @@ class UpdaterController extends  AdminController
         $this->checkPermission('system_log_view');
 
         return view('Core::admin.updater.index',$data);
+        
     }
 
     public function checkUpdate(){

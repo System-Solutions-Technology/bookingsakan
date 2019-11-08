@@ -8,8 +8,9 @@
                     <h1 class="title-bar">{{__('System Updater')}}</h1>
                 </div>
                 @include('admin.message')
+                <p class="alert-success alert"><strong>No Updates Available</strong></p>
 
-                @if($ready_for_update)
+                {{-- @if($ready_for_update)
                 <div class="panel">
                     <div class="panel-title"><strong>{{__('Update booking core')}}</strong></div>
                     <div class="panel-body">
@@ -81,7 +82,7 @@
                             </div>
                         </form>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
