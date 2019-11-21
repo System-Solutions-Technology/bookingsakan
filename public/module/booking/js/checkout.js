@@ -20,7 +20,7 @@
                 this.onSubmit = true;
 
                 $.ajax({
-                    url:bookingCore.url+'/booking/doCheckout',
+                    url:bookingCore.url+'/booking/test',
                     data:$('.booking-form').find('input,textarea,select').serialize(),
                     method:"post",
                     success:function (res) {

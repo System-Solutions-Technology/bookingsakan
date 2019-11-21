@@ -94,8 +94,12 @@
     <p class="alert-text mt10" v-show=" message.content" v-html="message.content" :class="{'danger':!message.type,'success':message.type}"></p>
 
     <div class="form-actions">
-        <button class="btn btn-danger" @click="doCheckout">{{__('Submit')}}
+        {{-- <button class="btn btn-danger" @click="doCheckout">{{__('Submit')}} --}}
+        <button class="btn btn-danger" id="booknow">{{__('Submit')}}
             <i class="fa fa-spin fa-spinner" v-show="onSubmit"></i>
         </button>
+    </div>
+    <div id="script-loader" style="display:none;">
+
     </div>
 </div>

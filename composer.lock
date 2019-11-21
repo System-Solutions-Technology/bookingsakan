@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "239e1569f6878e4b86ef5c815dd1b7da",
+    "content-hash": "0f0018e2c9b32ed295e9e39b176ae9c4",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -825,6 +825,63 @@
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
+            "name": "jestillore-edited/omnipay-paytabs",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/daoudomardz/omnipay-paytabs.git",
+                "reference": "9f9ae35ee582225781258883103af329e174334b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/daoudomardz/omnipay-paytabs/zipball/9f9ae35ee582225781258883103af329e174334b",
+                "reference": "9f9ae35ee582225781258883103af329e174334b",
+                "shasum": ""
+            },
+            "require": {
+                "omnipay/common": "^3"
+            },
+            "require-dev": {
+                "omnipay/tests": "^3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Omnipay\\PayTabs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jillberth Estillore",
+                    "email": "ejillberth@gmail.com"
+                },
+                {
+                    "name": "Omnipay Contributors",
+                    "homepage": "https://github.com/jestillore/omnipay-paytabs/contributors"
+                }
+            ],
+            "description": "PayTabs driver for the Omnipay payment processing library",
+            "homepage": "https://github.com/jestillore/omnipay-paytabs.git",
+            "keywords": [
+                "gateway",
+                "merchant",
+                "omnipay",
+                "pay",
+                "payment",
+                "paytabs"
+            ],
+            "time": "2019-11-12T15:53:50+00:00"
+        },
+        {
             "name": "kalnoy/nestedset",
             "version": "v4.3.5",
             "source": {
@@ -1424,6 +1481,42 @@
                 "phpspreadsheet"
             ],
             "time": "2019-09-04T19:28:20+00:00"
+        },
+        {
+            "name": "maq89/paytabs-laravel",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maq89/paytabs-laravel.git",
+                "reference": "8edce931ef5102769d410431225ea0e9d29ec864"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maq89/paytabs-laravel/zipball/8edce931ef5102769d410431225ea0e9d29ec864",
+                "reference": "8edce931ef5102769d410431225ea0e9d29ec864",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "~5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Damas\\Paytabs": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Musaib Qureshi",
+                    "email": "maq.s89@gmail.com"
+                }
+            ],
+            "description": "Paytabs Laravel",
+            "time": "2018-07-08T09:30:49+00:00"
         },
         {
             "name": "markbaker/complex",
@@ -6915,7 +7008,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "jestillore-edited/omnipay-paytabs": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

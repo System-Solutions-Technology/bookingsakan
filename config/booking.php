@@ -7,7 +7,9 @@ return [
     'payment_gateways'=>[
         'offline_payment'=>Modules\Booking\Gateways\OfflinePaymentGateway::class,
         'paypal'=>Modules\Booking\Gateways\PaypalGateway::class,
-        'stripe'=>Modules\Booking\Gateways\StripeGateway::class
+        'stripe'=>Modules\Booking\Gateways\StripeGateway::class,
+        'paytabs'=>Modules\Booking\Gateways\PaytabsGateway::class,
+        'foloosi'=>Modules\Booking\Gateways\FoloosiGateway::class
     ],
     'statuses'=>[
         'completed',
