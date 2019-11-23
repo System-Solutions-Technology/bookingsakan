@@ -31,7 +31,7 @@
         </button>
     </div>
     @if(setting_item('facebook_enable') or setting_item('google_enable') or setting_item('twitter_enable'))
-        <div class="advanced">
+        <div class="">
             <p class="text-center f14 c-grey">{{__('or continue with')}}</p>
             <div class="row">
                 @if(setting_item('facebook_enable'))
