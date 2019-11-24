@@ -510,6 +510,50 @@ jQuery(function ($) {
         $(this).prev().html(old+1);
         updateGuestCountText(parent);
     });
+    $('.select-guests-dropdown .btn-t-minus').click(function(e){
+        e.stopPropagation();
+        var parent = $(this).closest('.form-select-guests');
+        var input = parent.find('.select-guests-dropdown [name='+$(this).data('input')+']');
+        var min = parseInt(input.attr('min'));
+        var old = parseInt(input.val());
+        
+        if(old <= min){
+            return;
+        }
+        if(old == 10){
+            input.val(5);
+            $(this).next().html(5);
+            
+        }else if(old == 5){
+            $(this).next().html(1);
+            input.val(1);
+            
+            
+        }
+        // updateGuestCountText(parent);
+    });
+
+    $('.select-guests-dropdown .btn-t-add').click(function(e){
+        e.stopPropagation();
+        
+        
+        var parent = $(this).closest('.form-select-guests');
+        var input = parent.find('.select-guests-dropdown [name='+$(this).data('input')+']');
+        var max = parseInt(input.attr('max'));
+        var old = parseInt(input.val());
+
+        if(old >= max){
+            return;
+        }
+        if(old == 1){
+            input.val(5);
+            $(this).prev().html(5);
+        }else if(old == 5){
+            $(this).prev().html(10);
+            input.val(10);
+        }
+        // updateGuestCountText(parent);
+    });
 
     function updateGuestCountText(parent){
         var adults = parseInt(parent.find('[name=adults]').val());

@@ -223,13 +223,21 @@
                 // this.handleTotalPrice();
             },
             addTimeshare(){
-                this.timeshare_years ++ ;
+                if(this.timeshare_years==5){
+                    this.timeshare_years = 10 ;
+                }
+                if(this.timeshare_years==1){
+                    this.timeshare_years = 5 ;
+                }
             },
             minusTimeshare(){
-                this.timeshare_years -- ;
-                if(this.timeshare_years  <=1){
-                    this.timeshare_years = 1;
+                if(this.timeshare_years==5){
+                    this.timeshare_years = 1 ;
                 }
+                if(this.timeshare_years==10){
+                    this.timeshare_years = 5 ;
+                }
+                
 				
             },
 			checkAvailability:function () {

@@ -130,9 +130,9 @@
                         <div class="dropdown-item-row">
                             <div class="label">{{__('Years')}}</div>
                             <div class="val">
-                                <span class="btn-minus" data-input="timeshare_years"><i class="icon ion-md-remove"></i></span>
-                                <span class="count-display">{{request()->query('timeshare_years',1)}}</span>
-                                <span class="btn-add" data-input="timeshare_years"><i class="icon ion-ios-add"></i></span>
+                                <span class="btn-t-minus" data-input="timeshare_years"><i class="icon ion-md-remove"></i></span>
+                                <span class="count-display">{{request()->query('timeshare_years',0)}}</span>
+                                <span class="btn-t-add" data-input="timeshare_years"><i class="icon ion-ios-add"></i></span>
                             </div>
                         </div>
                         
