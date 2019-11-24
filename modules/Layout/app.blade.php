@@ -55,6 +55,12 @@
             success:"{{__("Success")}}",
         };
     </script>
+    <script type="text/javascript" src="https://cdn.weglot.com/weglot.min.js"></script>
+    <script>
+        Weglot.initialize({
+            api_key: 'wg_357507c3b95c0186b8ee686847ffdbd10'
+        });
+    </script>
     <!-- Styles -->
     @yield('head')
     {{--Custom Style--}}
