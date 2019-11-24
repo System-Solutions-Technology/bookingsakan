@@ -1,4 +1,4 @@
-<div class="bravo-call-to-action">
+<div class="bravo-call-to-action mobile-app-call">
     <div class="container">
         <div class="context">
             <div class="row">
