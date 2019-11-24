@@ -29,6 +29,9 @@
                     </li>
                 @endif
             @endforeach
+            <li><a href="https://ru.bookingsaken.com/en"class="is_login"><span class="flag-icon flag-icon-ru"></span> Pусский</a></li>
+            <li><a href="https://tr.bookingsaken.com/en"class="is_login"><span class="flag-icon flag-icon-tr"></span> Türk</a></li>
+            <li><a href="https://fr.bookingsaken.com/en"class="is_login"><span class="flag-icon flag-icon-fr"></span> Français</a></li>
         </ul>
     </li>
 @endif
