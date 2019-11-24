@@ -17,7 +17,7 @@
             @endif
         @endforeach
         <ul class="dropdown-menu text-left">
-            @foreach($languages as $language)
+            {{-- @foreach($languages as $language)
                 @if($locale != $language->locale)
                     <li>
                         <a href="{{get_lang_switcher_url($language->locale)}}" class="is_login">
@@ -28,10 +28,13 @@
                         </a>
                     </li>
                 @endif
-            @endforeach
+            @endforeach --}}
+            
+            <li><a href="https://bookingsaken.com/en"class="is_login"><span class="flag-icon flag-icon-gb"></span> English</a></li>
+            <li><a href="https://bookingsaken.com/ar"class="is_login"><span class="flag-icon flag-icon-sa"></span> العربية</a></li>
+            <li><a href="https://fr.bookingsaken.com/en"class="is_login"><span class="flag-icon flag-icon-fr"></span> Français</a></li>
             <li><a href="https://ru.bookingsaken.com/en"class="is_login"><span class="flag-icon flag-icon-ru"></span> Pусский</a></li>
             <li><a href="https://tr.bookingsaken.com/en"class="is_login"><span class="flag-icon flag-icon-tr"></span> Türk</a></li>
-            <li><a href="https://fr.bookingsaken.com/en"class="is_login"><span class="flag-icon flag-icon-fr"></span> Français</a></li>
         </ul>
     </li>
 @endif
