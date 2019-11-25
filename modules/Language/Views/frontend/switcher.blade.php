@@ -16,7 +16,7 @@
                 </a>
             @endif
         @endforeach
-        <ul class="dropdown-menu text-left">
+        <ul class="dropdown-menu dropdown-menu-lang text-left">
             {{-- @foreach($languages as $language)
                 @if($locale != $language->locale)
                     <li>
