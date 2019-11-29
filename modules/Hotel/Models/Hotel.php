@@ -758,8 +758,8 @@ class Hotel extends Bookable
         $this->tmp_rooms = [];
         foreach($rooms as $room){
             if($room->isAvailableAt($filters)){
-
                 $tmp_nights =$room->tmp_nights;
+                error_log(($filters['timeshare_years'] >1)?$tmp_nights/$filters['timeshare_years']:$tmp_nights);
                 $tmp_price = ($filters['timeshare_years'] >1 )? $room->tmp_timeshare_price:$room->tmp_price ;
                 $res[] = [
                     'id'=>$room->id,
@@ -774,7 +774,7 @@ class Hotel extends Bookable
                     'image'=>$room->image_id ? get_file_url($room->image_id,'medium') :'',
                     'tmp_number'=>$room->tmp_number,
                     'gallery'=>$room->getGallery(),
-                    'price_html'=>format_money($tmp_price).'<span class="unit">/'.($tmp_nights ? __(':count nights',['count'=>$tmp_nights]) : __(":count night",['count'=>$tmp_nights])).'</span>'
+                    'price_html'=>format_money($tmp_price).'<span class="unit">/'.($tmp_nights ? __(':count nights',['count'=>($filters['timeshare_years'] >1)?($tmp_nights/$filters['timeshare_years']):$tmp_nights]) : __(":count night",['count'=>$tmp_nights])).($filters['timeshare_years'] >1 ?' x ':'').($filters['timeshare_years'] >1 ? __(':count years',['count'=>$filters['timeshare_years']]) : '').'</span>'
                     //'price_html'=>format_money($room->tmp_price).'<span class="unit">/'.($room->tmp_nights ? __(':count nights',['count'=>$room->tmp_nights]) : __(":count night",['count'=>$room->tmp_nights])).'</span>'
                 ];
                 $this->tmp_rooms[] = $room;
