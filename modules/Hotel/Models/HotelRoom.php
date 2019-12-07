@@ -151,7 +151,7 @@ class HotelRoom extends Bookable
         $query = $this->roomDateClass::query();
         $query->where('target_id',$this->id);
         $query->where('start_date','>=',date('Y-m-d H:i:s',strtotime($start_date)));
-        $query->where('end_date','<=',date('Y-m-d H:i:s',strtotime($end_date)));
+        $query->where('end_date','<',date('Y-m-d H:i:s',strtotime($end_date)));
         return $query->take(40)->get();
     }
 
