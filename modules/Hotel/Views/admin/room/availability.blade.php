@@ -79,6 +79,12 @@
                         </div>
                         <div class="col-md-6" v-show="form.active">
                             <div class="form-group">
+                                <label >{{__('Price Timeshare')}}</label>
+                                <input type="number"  v-model="form.timeshare_price" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6" v-show="form.active">
+                            <div class="form-group">
                                 <label >{{__('Number of room')}}</label>
                                 <input type="number"  v-model="form.number" class="form-control">
                             </div>
@@ -192,6 +198,7 @@
                 form:{
                     id:'',
                     price:'',
+                    timeshare_price:'',
                     start_date:'',
                     end_date:'',
                     is_instant:'',
@@ -204,6 +211,7 @@
                 formDefault:{
                     id:'',
                     price:'',
+                    timeshare_price:'',
                     start_date:'',
                     end_date:'',
                     is_instant:'',

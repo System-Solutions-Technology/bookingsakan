@@ -70,7 +70,7 @@ class HotelRoom extends Bookable
         if( !empty($filters['children']) and $this->children < $filters['children'] ){
             return false;
         }
-        
+        // error_log($filters['end_date']);
         $roomDates =  $this->getDatesInRange($filters['start_date'],$filters['end_date']);
         $allDates = [];
         $tmp_price = 0;
@@ -109,14 +109,18 @@ class HotelRoom extends Bookable
 
         if(!empty($roomDates))
         {
+            // print($roomDates);
+            // error_log($roomDates);
             foreach ($roomDates as $row)
             {
                 if(!$row->active or !$row->number or !$row->price) return false;
                 $allDates[date('Y-m-d',strtotime($row->start_date))] = [
                     'number'=>$row->number,
                     'price'=>$row->price,
-                    'timeshare_price'=>$this->timeshare_price
+                    'timeshare_price'=>$row->timeshare_price
                 ];
+                // print($row->price);
+                // error_log($allDates[date('Y-m-d',strtotime($row->start_date))]);
             }
         }
         $roomBookings = $this->getBookingsInRange($filters['start_date'],$filters['end_date']);
@@ -148,7 +152,6 @@ class HotelRoom extends Bookable
         $query->where('target_id',$this->id);
         $query->where('start_date','>=',date('Y-m-d H:i:s',strtotime($start_date)));
         $query->where('end_date','<=',date('Y-m-d H:i:s',strtotime($end_date)));
-
         return $query->take(40)->get();
     }
 
