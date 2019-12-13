@@ -159,8 +159,8 @@ class BookingController extends \App\Http\Controllers\Controller
         
         //Create an array of custom headers.
         $customHeaders = array(
-            // 'secret_key:live_$2y$10$YSDdl.VOHfuZ74mFpV.1juJ6MShTowbyl3.lHGYuxkXdog2oe.Rfa'
-            'merchant_key:test_$2y$10$TuB4vGz4kPwGkjgDyrVRA.B0JsLJ.0a3G8ykTcTD8fTwTTZrT2BqW'
+            'secret_key:live_$2y$10$YSDdl.VOHfuZ74mFpV.1juJ6MShTowbyl3.lHGYuxkXdog2oe.Rfa'
+            // 'merchant_key:test_$2y$10$TuB4vGz4kPwGkjgDyrVRA.B0JsLJ.0a3G8ykTcTD8fTwTTZrT2BqW'
             
         );
         
@@ -182,7 +182,7 @@ class BookingController extends \App\Http\Controllers\Controller
         $html= '<script type="text/javascript">
         var options = {
             "reference_token" : "'.$result->data->reference_token.'",
-            "merchant_key" : "test_$2y$10$TuB4vGz4kPwGkjgDyrVRA.B0JsLJ.0a3G8ykTcTD8fTwTTZrT2BqW"
+            "merchant_key" : "live_$2y$10$VK6LJ9xEz6LxmI826NmrFOCGtCYhZyxC10tNmvLct4su8felYZCy2"
         }
         var fp1 ;
         function pay(){
