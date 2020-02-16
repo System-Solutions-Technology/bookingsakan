@@ -59,7 +59,7 @@
     <script>
         Weglot.on("switchersReady", function(initialLanguage) {
             console.log("the switchers are ready, I can tweak them")
-            console.log($( '.dropdown-menu-lang' ));
+            console.log($( '.dropdown-menu-lang' ).html());
             
             $( '.dropdown-menu-lang' ).html('<li><a href="http://bookingsaken.com/en" class="is_login"><span class="flag-icon flag-icon-gb"></span> English</a></li><li><a href="http://bookingsaken.com/ar"  class="is_login"><span class="flag-icon flag-icon-sa"></span> العربية</a></li><li><a href="https://fr.bookingsaken.com" class="is_login"><span class="flag-icon flag-icon-fr"></span> Français</a></li><li><a href="https://ru.bookingsaken.com" class="is_login"><span class="flag-icon flag-icon-ru"></span>  Pусский</a></li><li><a href="https://tr.bookingsaken.com" class="is_login"><span class="flag-icon flag-icon-tr"></span>  Türk</a></li>');
         })
