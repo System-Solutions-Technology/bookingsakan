@@ -14,12 +14,14 @@
                     @if($link_title)
                         <a class="btn-more" href="{{$link_more}}">
                             {{$link_title}}
+                            <i class="fa fa-android" aria-hidden="true"></i>
                         </a>
                     @endif
                 </div>
                 <div class="col-md-2">
                         <a class="btn-more" href="https://apps.apple.com/us/app/bookingsaken/id1489329775">
                         iOS
+                        <i class="fa fa-apple" aria-hidden="true"></i>
                         </a>
                 </div>
             </div>
