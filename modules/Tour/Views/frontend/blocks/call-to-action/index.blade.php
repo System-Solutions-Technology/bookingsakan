@@ -20,14 +20,13 @@
                                     <i class="fa fa-android" aria-hidden="true"></i>
                                 </a>
                             @endif --}}
-                            <a class="btn-more btn-lg " style="background-color:#a4c639;color:white;"  href="https://apps.apple.com/us/app/bookingsaken/id1489329775">
-                                Android
-                                <i class="fa fa-android " aria-hidden="true" style="font-size:1.5em"></i>
+                            <a class="btn-more btn-lg "  href="https://apps.apple.com/us/app/bookingsaken/id1489329775">
+                              <img style="width:120px;"  src="images/android.png" alt="">
                             </a>
                         </div>
                         <div class="mx-1">
-                                <a class="btn-more btn-lg" style="background-color:#7D7D7D;color:white;" href="https://apps.apple.com/us/app/bookingsaken/id1489329775">
-                              <img src="images/ios.png" alt="">
+                                <a class="btn-more btn-lg" href="https://apps.apple.com/us/app/bookingsaken/id1489329775">
+                              <img style="width:120px;" src="images/ios.png" alt="">
                                 </a>
                         </div>
                     </div>
