@@ -21,7 +21,7 @@
                                 </a>
                             @endif --}}
                             <a class="btn-more btn-lg "  href="https://apps.apple.com/us/app/bookingsaken/id1489329775">
-                              <img style="width:120px;"  src="images/android.png" alt="">
+                              <img style="width:137px;"  src="images/android.png" alt="">
                             </a>
                         </div>
                         <div class="mx-1">
