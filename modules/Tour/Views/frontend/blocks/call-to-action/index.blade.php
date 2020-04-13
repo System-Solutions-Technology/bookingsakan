@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="row d-flex justify-content-center">
-    
+
                         <div class="mx-1">
                             {{-- @if($link_title)
                                 <a class="btn-more" href="{{$link_more}}">
@@ -27,8 +27,7 @@
                         </div>
                         <div class="mx-1">
                                 <a class="btn-more btn-lg" style="background-color:#7D7D7D;color:white;" href="https://apps.apple.com/us/app/bookingsaken/id1489329775">
-                                iOS
-                                <i class="fa fa-apple "  aria-hidden="true" style="font-size:1.5em"></i>
+                              <img src="images/ios.png" alt="">
                                 </a>
                         </div>
                     </div>
