@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Assets;
+use ReflectionClass;
 use function Clue\StreamFilter\fun;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -80,6 +81,14 @@ class Controller extends BaseController
     }
     protected function registerCss($file,$inFooter = false, $pos = 10,$version = false){
         Assets::registerCss($file,$inFooter,$pos,$version);
+    }
+
+    function view($view = null, $data = [], $request = null)
+    {
+        if(isset($request) && $request->route('json')) {
+            return response()->json($data);
+        }
+        return view($view, $data, []);
     }
 
 }

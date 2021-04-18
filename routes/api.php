@@ -13,6 +13,15 @@ use Illuminate\Http\Request;
 |
 */
 
+use Modules\Hotel\Models\Hotel;
+
+Route::post('/invoke/{moduleName}/{modelName}/{id}/{methodName}', 'ReflectionController@call_method_json');
+
+Route::group(['prefix'=>'user'],function(){
+    Route::post('login','\Modules\User\Controllers\UserController@userLogin');
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+

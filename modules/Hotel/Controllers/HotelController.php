@@ -23,7 +23,7 @@ class HotelController extends Controller
     {
         $is_ajax = $request->query('_ajax');
         $model_hotel = $this->hotelClass::select("bravo_hotels.*");
-        
+
         $model_hotel->where("bravo_hotels.status", "publish");
         $timeshare = $request->timeshare_years > 1?1:0;
         if ($timeshare == 1) {
@@ -43,7 +43,7 @@ class HotelController extends Controller
         if (!empty($price_range = $request->query('price_range'))) {
             $pri_from = explode(";", $price_range)[0];
             $pri_to = explode(";", $price_range)[1];
-            $raw_sql_min_max = "(  bravo_hotels.price >= ? ) 
+            $raw_sql_min_max = "(  bravo_hotels.price >= ? )
                             AND (  bravo_hotels.price <= ? )";
             $model_hotel->WhereRaw($raw_sql_min_max,[$pri_from,$pri_to]);
         }
@@ -71,7 +71,6 @@ class HotelController extends Controller
                     "lat"     => (float)$row->map_lat,
                     "lng"     => (float)$row->map_lng,
                     "gallery" => $row->getGallery(true),
-                    "infobox" => view('Hotel::frontend.layouts.search.loop-grid', ['row' => $row,'disable_lazyload'=>1,'wrap_class'=>'infobox-item'])->render(),
                     'marker'  => url('images/icons/png/pin.png'),
                 ];
             }
@@ -107,13 +106,13 @@ class HotelController extends Controller
             $data['html_class'] = 'full-page';
             return view('Hotel::frontend.search-map', $data);
         }
-        return view('Hotel::frontend.search', $data);
+        return $this->view('Hotel::frontend.search', $data, $request);
     }
 
     public function timeshare(Request $request){
         $is_ajax = $request->query('_ajax');
         $model_hotel = $this->hotelClass::select("bravo_hotels.*");
-        
+
         $model_hotel->where("bravo_hotels.status", "publish");
         // $timeshare = $request->timeshare_years > 1?1:0;
         // if ($timeshare == 1) {
@@ -133,7 +132,7 @@ class HotelController extends Controller
         if (!empty($price_range = $request->query('price_range'))) {
             $pri_from = explode(";", $price_range)[0];
             $pri_to = explode(";", $price_range)[1];
-            $raw_sql_min_max = "(  bravo_hotels.price >= ? ) 
+            $raw_sql_min_max = "(  bravo_hotels.price >= ? )
                             AND (  bravo_hotels.price <= ? )";
             $model_hotel->WhereRaw($raw_sql_min_max,[$pri_from,$pri_to]);
         }
@@ -195,11 +194,10 @@ class HotelController extends Controller
         if ($layout == "map") {
             $data['body_class'] = 'has-search-map';
             $data['html_class'] = 'full-page';
-            return view('Hotel::frontend.search-map', $data);
+            return $this->view('Hotel::frontend.search-map', $data, $request);
         }
         // dd($data);
-        return view('Hotel::frontend.search_timeshare', $data);
-        return "<h1>hey</h1>";
+        return $this->view('Hotel::frontend.search_timeshare', $data, $request);
     }
 
     public function detail(Request $request, $slug)
@@ -226,7 +224,7 @@ class HotelController extends Controller
             'body_class'=>'is_single'
         ];
         $this->setActiveMenu($row);
-        return view('Hotel::frontend.detail', $data);
+        return $this->view('Hotel::frontend.detail', $data, $request);
     }
 
     public function checkAvailability(){
@@ -250,7 +248,7 @@ class HotelController extends Controller
             if($num_days_in_seconds > 30*DAY_IN_SECONDS){
                 $this->sendError(__("Maximum day for booking is 30"));
             }
-            
+
         }
         $hotel = $this->hotelClass::find($hotel_id);
         //add translation
@@ -273,7 +271,7 @@ class HotelController extends Controller
             if ($num_days < 7) {
                 $this->sendError(__("Book at least 7 days to use Timeshare"));
             }
-            for ($k=0; $k < request('timeshare_years'); $k++) { 
+            for ($k=0; $k < request('timeshare_years'); $k++) {
 
                 $rooms = $hotel->getRoomsAvailability($input);
                 $new_start_date  = date("Y-m-d", strtotime(date("Y-m-d", strtotime($new_start_date)) . " + 1 year"));
@@ -284,13 +282,13 @@ class HotelController extends Controller
                 $times[] = $new_end_date;
                 if ($k >0) {
                     $new_rooms =[];
-                    for ($i=0; $i <count($previous_rooms) ; $i++) { 
-                        for ($j=0; $j <count($rooms) ; $j++) { 
+                    for ($i=0; $i <count($previous_rooms) ; $i++) {
+                        for ($j=0; $j <count($rooms) ; $j++) {
                             if ($previous_rooms[$i]['id'] == $rooms[$j]['id']) {
                                 $new_rooms[] = $previous_rooms[$i];
                             }
                         }
-                    }  
+                    }
                     $previous_rooms = $new_rooms;
                 }else{
                     $previous_rooms = $new_rooms =$rooms;
