@@ -91,6 +91,7 @@ class UserController extends FrontendController
 
     public function changePassword(Request $request)
     {
+        return "hello";
         if (!empty($request->input()) && isset($request->input()['current-password'])) {
             if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
                 // The passwords matches
@@ -124,7 +125,7 @@ class UserController extends FrontendController
             ],
             'page_title'         => __("Change Password"),
         ];
-        return view('User::frontend.changePassword',$data);
+        return $this->view('User::frontend.changePassword', $data, $request);
     }
 
     public function bookingHistory(Request $request)

@@ -13,12 +13,13 @@ use Illuminate\Http\Request;
 |
 */
 
-use Modules\Hotel\Models\Hotel;
 
 Route::post('/invoke/{moduleName}/{modelName}/{id}/{methodName}', 'ReflectionController@call_method_json');
 
-Route::group(['prefix'=>'user'],function(){
+Route::group(['prefix'=>'user'], function() {
     Route::post('login','\Modules\User\Controllers\UserController@userLogin');
+    Route::post('register','\Modules\User\Controllers\UserController@userRegister');
+    Route::post('logout','\Modules\User\Controllers\UserController@logout')->name('auth.logout');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
