@@ -18,6 +18,12 @@ class LocationController extends Controller
 
     }
 
+    public function getAllLocations(Request $request){
+        $data = $this->location::where("status", "publish")->get();
+        return response()->json($data);
+
+    }
+
     public function detail(Request $request, $slug)
     {
         $row = $this->location::where('slug', $slug)->where("status", "publish")->first();;
