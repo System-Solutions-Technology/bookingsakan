@@ -2,6 +2,7 @@
 namespace Modules\User\Controllers;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Matrix\Exception;
 use Modules\FrontendController;
@@ -186,10 +187,11 @@ class UserController extends FrontendController
                     ], 200);
 
                 }
-
+                $api_token = ApiTokenController::updateUserHash(Auth::user());
                 return response()->json([
                     'error'    => false,
                     'messages' => false,
+                    'api_token' => $api_token,
                     'redirect' => $request->headers->get('referer') ?? url(app_get_locale(false,'/'))
                 ], 200);
             } else {
@@ -255,12 +257,13 @@ class UserController extends FrontendController
                                  'messages' => $validator->errors()
         ], 200);
     } else {
-
+        $api_token = Str::random(60);
         $user = \App\User::create([
             'first_name'=>$request->input('first_name'),
             'last_name'=>$request->input('last_name'),
             'email'=>$request->input('email'),
             'password'=>Hash::make($request->input('password')),
+            'api_token' => hash('sha256', $api_token),
             'publish'=>$request->input('publish'),
         ]);
 
@@ -278,6 +281,7 @@ class UserController extends FrontendController
         return response()->json([
             'error'    => false,
             'messages'  => false,
+            'api_token' => $api_token,
             'redirect' => $request->headers->get('referer') ?? url(app_get_locale(false,'/'))
         ], 200);
     }
@@ -304,6 +308,16 @@ class UserController extends FrontendController
             $a->save();
             $this->sendSuccess([], __('Thank you for subscribing'));
         }
+    }
+
+    public function logout_token(Request $request)
+    {
+
+        $request->user()->forceFill([
+            'api_token' => null,
+        ])->save();
+
+        return response()->json(true);
     }
 
     public function logout(Request $request)

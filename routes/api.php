@@ -19,7 +19,6 @@ Route::post('/invoke/{moduleName}/{modelName}/{id}/{methodName}', 'ReflectionCon
 Route::group(['prefix'=>'user'], function() {
     Route::post('login','\Modules\User\Controllers\UserController@userLogin');
     Route::post('register','\Modules\User\Controllers\UserController@userRegister');
-    Route::post('logout','\Modules\User\Controllers\UserController@logout')->name('auth.logout');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

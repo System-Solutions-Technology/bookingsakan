@@ -16,8 +16,10 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix'=>'users','middleware' => ['auth']],function() {
-    Route::match(['get', 'post'], 'profile', 'UserController@profile')->defaults('json', true);
+Route::group(['prefix'=>'user','middleware' => ['auth:api']],function() {
+    Route::post('logout','UserController@logout_token');
+    Route::post('profile', 'UserController@profile')->defaults('json', true);
+    Route::post('refresh-token','ApiTokenController@update');
 });
 
 Route::group(['prefix'=>'user', 'middleware' => ['auth']],function(){
