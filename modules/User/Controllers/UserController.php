@@ -56,6 +56,37 @@ class UserController extends FrontendController
         }
     }
 
+    public function profile_token(Request $request)
+    {
+        return response()->json(Auth::user());
+    }
+
+    public function update_profile_token(Request $request)
+    {
+        $user = Auth::user();
+        $rules = [
+            'first_name'              => 'required|max:255',
+            'last_name'              => 'required|max:255',
+            'email'              =>[
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id)
+            ],
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(['error' => true,
+                'messages' => $validator->errors()
+            ], 400);
+        }
+
+        $user->fill($request->input());
+        $user->birthday = date("Y-m-d", strtotime($user->birthday));
+        $user->save();
+        return response()->json(true);
+    }
+
     public function profile(Request $request)
     {
         $user = Auth::user();
@@ -90,9 +121,57 @@ class UserController extends FrontendController
         return view('User::frontend.profile', $data);
     }
 
+    public function changePassword_token(Request $request)
+    {
+        $rules = [
+            'current-password' => 'required',
+            'new-password'     => 'required|string|min:6|confirmed',
+        ];
+        $messages = [
+            'current-password.required'    => __('Password is required field'),
+            'new-password.email'       => __('New password is required field'),
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => true,
+                'messages' => $validator->errors()
+            ], 400);
+        }
+
+        if (!empty($request->input()) && isset($request->input()['current-password'])) {
+            if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
+                // The passwords matches
+                return response()->json([
+                    'error' => true,
+                    'message' => __("Your current password does not matches with the password you provided. Please try again.")
+                ]);
+            }
+            if (strcmp($request->get('current-password'), $request->get('new-password')) == 0) {
+                //Current password and new password are same
+                return response()->json([
+                    'error' => true,
+                    'message' => __("New Password cannot be same as your current password. Please choose a different password.")
+                ]);
+            }
+
+            //Change Password
+            $user = Auth::user();
+            $user->password = bcrypt($request->get('new-password'));
+            $user->save();
+            return response()->json([
+                'error' => true,
+                'message' => __('Password changed successfully !')
+            ]);
+        }
+        return response()->json([
+            'error' => false,
+        ]);
+    }
+
     public function changePassword(Request $request)
     {
-        return "hello";
         if (!empty($request->input()) && isset($request->input()['current-password'])) {
             if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
                 // The passwords matches
