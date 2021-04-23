@@ -302,4 +302,13 @@ class HotelController extends Controller
             'rooms'=>$new_rooms
         ]);
     }
+
+    public function getBestHotels(Request $request){
+
+        $limit = $request->query('limit') != null ? $request->query('_ajax') : 5;
+
+        $data = $this->hotelClass::select("bravo_hotels.*")->orderBy("star_rate", "desc")->limit($limit)->get();
+
+        return response()->json($data);
+    }
 }
