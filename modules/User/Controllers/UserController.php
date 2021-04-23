@@ -192,6 +192,7 @@ class UserController extends FrontendController
                     'error'    => false,
                     'messages' => false,
                     'api_token' => $api_token,
+                    'user' => Auth::user(),
                     'redirect' => $request->headers->get('referer') ?? url(app_get_locale(false,'/'))
                 ], 200);
             } else {
