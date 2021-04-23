@@ -2,6 +2,7 @@
 namespace Modules\Location\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Modules\Location\Models\Location;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,18 @@ class LocationController extends Controller
 
     public function getAllLocations(Request $request){
         $data = $this->location::where("status", "publish")->get();
+        return response()->json($data);
+
+    }
+
+    public function getTopDestinations(Request $request){
+        $data = $this->location::where("bravo_locations.status", "publish")
+            ->select('bravo_locations.id','bravo_locations.name','bravo_locations.image_id', DB::raw('COUNT(bravo_hotels.id) as hotels'))
+            ->join('bravo_hotels', 'bravo_locations.id', '=', 'bravo_hotels.location_id')
+            ->groupBy("bravo_locations.id")
+            ->orderBy('hotels','desc')
+            ->get();
+
         return response()->json($data);
 
     }
