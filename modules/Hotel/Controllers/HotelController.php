@@ -252,7 +252,6 @@ class HotelController extends Controller
         $review_list = Review::where('object_id', $row->id)->where('object_model', 'hotel')->where("status", "approved")->orderBy("id", "desc")->with('author')->paginate(setting_item('hotel_review_number_per_page', 5));
         $data = [
             'row'          => $row,
-            'gallery' => $row->getGallery(),
             'translation'       => $translation,
             'hotel_related' => $hotel_related,
             'booking_data' => $row->getBookingData(),

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Location\Models\Location;
 use Illuminate\Http\Request;
+use Modules\Media\Helpers\FileHelper;
 
 class LocationController extends Controller
 {
@@ -20,19 +21,22 @@ class LocationController extends Controller
     }
 
     public function getAllLocations(Request $request){
-        $data = $this->location::where("status", "publish")->get();
+        $data = $this->location::where("status", "publish")
+            ->select('bravo_locations.*', 'media_files.file_path')
+            ->join('media_files', 'bravo_locations.image_id', 'media_files.id')
+            ->get();
         return response()->json($data);
 
     }
 
     public function getTopDestinations(Request $request){
         $data = $this->location::where("bravo_locations.status", "publish")
-            ->select('bravo_locations.id','bravo_locations.name','bravo_locations.image_id', DB::raw('COUNT(bravo_hotels.id) as hotels'))
+            ->select('bravo_locations.id','bravo_locations.name','media_files.file_path', DB::raw('COUNT(bravo_hotels.id) as hotels'))
             ->join('bravo_hotels', 'bravo_locations.id', '=', 'bravo_hotels.location_id')
+            ->join('media_files', 'bravo_locations.image_id', 'media_files.id')
             ->groupBy("bravo_locations.id")
             ->orderBy('hotels','desc')
             ->get();
-
         return response()->json($data);
 
     }
