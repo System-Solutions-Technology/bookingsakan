@@ -2,9 +2,11 @@
 namespace Modules\Hotel\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Core\Models\Terms;
 use Modules\Hotel\Models\Hotel;
 use Illuminate\Http\Request;
 use Modules\Location\Models\Location;
+use Modules\Media\Helpers\FileHelper;
 use Modules\Review\Models\Review;
 use Modules\Core\Models\Attributes;
 use DB;
@@ -200,6 +202,40 @@ class HotelController extends Controller
         return $this->view('Hotel::frontend.search_timeshare', $data, $request);
     }
 
+    public function detail_token(Request $request, $slug)
+    {
+
+        $row = $this->hotelClass::where('slug', $slug)->where("status", "publish")->with(['location','translations','hasWishList'])->first();;
+        if (empty($row)) {
+            return redirect('/');
+        }
+        $translation = $row->translateOrOrigin(app()->getLocale());
+        $hotel_related = [];
+        $location_id = $row->location_id;
+        if (!empty($location_id)) {
+            $hotel_related = $this->hotelClass::where('location_id', $location_id)->where("status", "publish")->take(4)->whereNotIn('id', [$row->id])->with(['location','translations','hasWishList'])->get();
+            foreach ($hotel_related as $hotel) {
+                $hotel->image_id = FileHelper::url($hotel->image_id, 'full');
+            }
+        }
+        $review_list = Review::where('object_id', $row->id)->where('object_model', 'hotel')->where("status", "approved")->orderBy("id", "desc")->with('author')->paginate(setting_item('hotel_review_number_per_page', 5));
+        $row->gallery = $row->getGallery();
+        $row->image_id = FileHelper::url($row->image_id, 'full');
+        $terms_ids = $row->terms->pluck('term_id');
+        $attributes = Terms::getTermsById($terms_ids);
+        $data = [
+            'row'          => $row,
+            'translation'       => $translation,
+            'hotel_related' => $hotel_related,
+            'booking_data' => $row->getBookingData(),
+            'attributes' => $attributes,
+            'review_list'  => $review_list,
+            'seo_meta'  => $row->getSeoMetaWithTranslation(app()->getLocale(),$translation),
+            'body_class'=>'is_single'
+        ];
+        return response()->json($data);
+    }
+
     public function detail(Request $request, $slug)
     {
 
@@ -216,6 +252,7 @@ class HotelController extends Controller
         $review_list = Review::where('object_id', $row->id)->where('object_model', 'hotel')->where("status", "approved")->orderBy("id", "desc")->with('author')->paginate(setting_item('hotel_review_number_per_page', 5));
         $data = [
             'row'          => $row,
+            'gallery' => $row->getGallery(),
             'translation'       => $translation,
             'hotel_related' => $hotel_related,
             'booking_data' => $row->getBookingData(),

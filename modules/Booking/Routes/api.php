@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,3 +13,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::group(['prefix'=>config('booking.booking_route_prefix'), 'middleware' => 'auth:api'],function() {
+    Route::post('book', 'BookingController@addToCart');
+    Route::post('checkout', 'BookingController@doCheckout');
+});

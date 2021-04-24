@@ -216,7 +216,7 @@ class Hotel extends Bookable
         $start_date = new \DateTime($request->input('start_date'));
         $end_date = new \DateTime($request->input('end_date'));
         $total = 0;
-        
+
         if(!empty($this->tmp_selected_rooms)){
             foreach ($this->tmp_selected_rooms as $room){
                 if(isset($this->tmp_rooms_by_id[$room['id']]))
@@ -271,19 +271,19 @@ class Hotel extends Bookable
             $booking->addMeta('children', $request->input('children'));
 
             // Add Room Booking
-            
+
             $start_date = $start_date->format('Y-m-d H:i:s');
             $end_date = $end_date->format('Y-m-d H:i:s');
 
             if(!empty($this->tmp_selected_rooms)){
                 foreach ($this->tmp_selected_rooms as $room){
                     if(isset($this->tmp_rooms_by_id[$room['id']]))
-                    {   
-                        
+                    {
+
                         if ($request->exists('timeshare_years')  && $request->timeshare_years > 1 ) {
                             $num_days = (strtotime($end_date) - strtotime($start_date))  / DAY_IN_SECONDS;
-                            for ($i=0; $i <$request->timeshare_years ; $i++) { 
-                            
+                            for ($i=0; $i <$request->timeshare_years ; $i++) {
+
                                 $hotelRoomBooking = new HotelRoomBooking();
                                 $hotelRoomBooking->fillByAttr([
                                     'room_id','parent_id','start_date','end_date','number','booking_id','price'
@@ -302,7 +302,7 @@ class Hotel extends Bookable
                                 $end_date  = date("Y-m-d", strtotime(date("Y-m-d", strtotime($start_date)) . " + ".$num_days." days"));
                             }
                         }else{
-                            
+
                             $hotelRoomBooking = new HotelRoomBooking();
                             $hotelRoomBooking->fillByAttr([
                                 'room_id','parent_id','start_date','end_date','number','booking_id','price'
@@ -318,12 +318,13 @@ class Hotel extends Bookable
 
                             $hotelRoomBooking->save();
                         }
-                       
+
                     }
                 }
             }
             $this->sendSuccess([
-                'url' => $booking->getCheckoutUrl()
+                'url' => $booking->getCheckoutUrl(),
+                'booking' => $booking
             ]);
         }
         $this->sendError(__("Can not check availability"));
