@@ -343,7 +343,11 @@ class HotelController extends Controller
 
         $limit = $request->query('limit') != null ? $request->query('_ajax') : 5;
 
-        $data = $this->hotelClass::select("bravo_hotels.*")->orderBy("star_rate", "desc")->limit($limit)->get();
+        $data = $this->hotelClass::select("bravo_hotels.*", "media_files.file_path")
+            ->join('media_files', 'bravo_hotels.image_id', 'media_files.id')
+            ->orderBy("star_rate", "desc")
+            ->limit($limit)
+            ->get();
 
         return response()->json($data);
     }
