@@ -16,7 +16,6 @@
                         @include('Space::frontend.layouts.details.space-review')
                     </div>
                     <div class="col-md-12 col-lg-3">
-                        @include('Tour::frontend.layouts.details.vendor')
                         @include('Space::frontend.layouts.details.space-form-book')
                     </div>
                 </div>

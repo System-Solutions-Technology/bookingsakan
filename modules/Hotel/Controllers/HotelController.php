@@ -351,4 +351,9 @@ class HotelController extends Controller
 
         return response()->json($data);
     }
+
+    public function attributes() {
+        $data = Attributes::where('service', 'hotel')->with(['terms','translations'])->get();
+        return response()->json($data);
+    }
 }

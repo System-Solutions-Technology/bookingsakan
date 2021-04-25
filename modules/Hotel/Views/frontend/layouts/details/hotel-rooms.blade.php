@@ -63,8 +63,7 @@
                         <div class="render">
                             <span class="adults" >
                                 <span class="one" >
-                                    <span v-if="timeshare_years < 2">{{__('No')}}</span>
-                                    <span v-else>@{{timeshare_years}} {{__('Years')}}</span>
+                                    <span>@{{timeshare_years}} {{__('Years')}}</span>
                                 </span>
                             </span>
                         </div>
