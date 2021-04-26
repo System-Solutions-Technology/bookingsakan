@@ -16,7 +16,8 @@ class OfflinePaymentGateway extends BaseGateway
         $booking->sendNewBookingEmails();
         $service->afterPaymentProcess($booking, $this);
         return response()->json([
-            'url' => $booking->getDetailUrl()
+            'url' => $booking->getDetailUrl(),
+            'booking' => $booking
         ])->send();
     }
 

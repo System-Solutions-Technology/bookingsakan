@@ -4,6 +4,7 @@ namespace Modules\Booking\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Mockery\Exception;
 //use Modules\Booking\Events\VendorLogPayment;
+use Modules\Media\Helpers\FileHelper;
 use Modules\Tour\Models\TourDate;
 
 use Modules\Booking\Models\Payment;
@@ -46,7 +47,7 @@ class BookingController extends \App\Http\Controllers\Controller
         return $data;
     }
     public function foloosiPay(Request $request){
-        
+
         $validator = Validator::make($request->all(), [
             'code' => 'required',
         ]);
@@ -123,27 +124,12 @@ class BookingController extends \App\Http\Controllers\Controller
         $booking->gateway = 'foloosi';
         $booking->save();
 
-//        event(new VendorLogPayment($booking));
-
-        $user = Auth::user();
-        $user->first_name = $request->input('first_name');
-        $user->last_name = $request->input('last_name');
-        $user->phone = $request->input('phone');
-        $user->address = $request->input('address_line_1');
-        $user->address2 = $request->input('address_line_2');
-        $user->city = $request->input('city');
-        $user->state = $request->input('state');
-        $user->zip_code = $request->input('zip_code');
-        $user->country = $request->input('country');
-        $user->save();
-
         $booking->addMeta('locale',app()->getLocale());
 
         $service->afterCheckout($request, $booking);
         try {
-            $url = "https://foloosi.com/api/v1/api/transaction-list";
         $url = 'https://foloosi.com/api/v1/api/initialize-setup';
-        
+
         //Create a cURL handle.
         $ch = curl_init($url);
         $post = [
@@ -156,14 +142,14 @@ class BookingController extends \App\Http\Controllers\Controller
             'customer_address'=>$request->input('address_line_1').' '.$request->input('address_line_2'),
             'customer_city'=>$request->input('city')
         ];
-        
+
         //Create an array of custom headers.
         $customHeaders = array(
             'secret_key:live_$2y$10$YSDdl.VOHfuZ74mFpV.1juJ6MShTowbyl3.lHGYuxkXdog2oe.Rfa'
             // 'merchant_key:test_$2y$10$TuB4vGz4kPwGkjgDyrVRA.B0JsLJ.0a3G8ykTcTD8fTwTTZrT2BqW'
-            
+
         );
-        
+
         //Use the CURLOPT_HTTPHEADER option to use our
         //custom headers.
         curl_setopt($ch, CURLOPT_HTTPHEADER, $customHeaders);
@@ -173,10 +159,10 @@ class BookingController extends \App\Http\Controllers\Controller
         //as a string.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        
+
         //Execute the request.
         $result = curl_exec($ch);
-        
+
         $result = json_decode($result);
         // printf( $result->data->reference_token);
         $html= '<script type="text/javascript">
@@ -190,12 +176,12 @@ class BookingController extends \App\Http\Controllers\Controller
             fp1.open();
         }
     </script>
-    
+
     ';
             // $gatewayObj->process($request, $booking, $service);
             // error_log($html);
-            
-            
+
+
         // if (in_array($booking->status, [
         //     $booking::PAID,
         //     $booking::COMPLETED,
@@ -230,7 +216,7 @@ class BookingController extends \App\Http\Controllers\Controller
             $this->sendError($exception->getMessage());
         }
         //----------------------------
-        
+
     }
     public function confirm(Request $request){
         $validator = Validator::make($request->all(), [
@@ -329,8 +315,8 @@ class BookingController extends \App\Http\Controllers\Controller
         /**
          * @param Booking $booking
          */
-        
-        
+
+
         $validator = Validator::make($request->all(), [
             'code' => 'required',
         ]);
@@ -472,7 +458,7 @@ class BookingController extends \App\Http\Controllers\Controller
             'service_type' => 'required',
             //'timeshare_years' => 'optional'
         ]);
-       
+
 
         if ($validator->fails()) {
             $this->sendError('', ['errors' => $validator->errors()]);
@@ -538,6 +524,20 @@ class BookingController extends \App\Http\Controllers\Controller
         if ($booking->gateway) {
             $data['gateway'] = get_payment_gateway_obj($booking->gateway);
         }
-        return view('Booking::frontend/detail', $data);
+        return $this->view('Booking::frontend/detail', $data, $request);
+    }
+
+    public function details(Request $request)
+    {
+
+        $bookings = Booking::where('customer_id', Auth::id())->get();
+        if (empty($bookings)) {
+            abort(404);
+        }
+
+        foreach ($bookings as $booking) {
+            $booking['gateway'] = get_payment_gateway_obj($booking->gateway);
+        }
+         return response()->json($bookings);
     }
 }

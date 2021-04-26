@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix'=>config('booking.booking_route_prefix'), 'middleware' => 'auth:api'],function() {
+    Route::post('/','BookingController@details')->defaults('json', true);
     Route::post('book', 'BookingController@addToCart');
     Route::post('checkout', 'BookingController@doCheckout');
+    Route::post('/{code}','BookingController@detail')->defaults('json', true);
 });
