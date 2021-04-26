@@ -291,12 +291,14 @@ class HotelController extends Controller
         }
         $hotel = $this->hotelClass::find($hotel_id);
         //add translation
-        if ($hotel->timeshare == 0 && request('timeshare_years') > 1) {
-            $this->sendError(__("This Hotel doesn't allow Timesharing"));
-        }
         if(empty($hotel_id) or empty($hotel)){
             $this->sendError(__("Hotel not found"));
         }
+
+        if ($hotel->timeshare == 0 && request('timeshare_years') > 1) {
+            $this->sendError(__("This Hotel doesn't allow Timesharing"));
+        }
+
         $num_days = $num_days_in_seconds / DAY_IN_SECONDS;
         //test
         $new_start_date = request('start_date');
