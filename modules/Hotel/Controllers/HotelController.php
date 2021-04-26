@@ -7,6 +7,7 @@ use Modules\Hotel\Models\Hotel;
 use Illuminate\Http\Request;
 use Modules\Location\Models\Location;
 use Modules\Media\Helpers\FileHelper;
+use Modules\Media\Models\MediaFile;
 use Modules\Review\Models\Review;
 use Modules\Core\Models\Attributes;
 use DB;
@@ -67,6 +68,8 @@ class HotelController extends Controller
         $markers = [];
         if (!empty($list)) {
             foreach ($list as $row) {
+                $imagePath = MediaFile::select("file_path")->where("id", $row->image_id)->firstOrFail();
+                $row->image_path = $imagePath->file_path;
                 $markers[] = [
                     "id"      => $row->id,
                     "title"   => $row->title,
