@@ -22,4 +22,7 @@ Route::group(['prefix'=>'user','middleware' => ['auth:api']], function() {
     Route::post('refresh-token','ApiTokenController@update');
     Route::post('change-password','UserController@changePassword_token');
     Route::post('update-profile', 'UserController@update_profile_token');
+    Route::post('hotel-wishlist','UserWishListController@getUserWishlist')->defaults('json', true);
+    Route::post('handle-wishlist','UserWishListController@handleWishList')->defaults('json', true);
+
 });

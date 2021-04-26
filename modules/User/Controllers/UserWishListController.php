@@ -29,8 +29,31 @@ class UserWishListController extends FrontendController
             ],
             'page_title'         => __("Wishlist"),
         ];
+
         return view('User::frontend.wishList.index', $data);
     }
+
+    public function getUserWishlist(Request $request){
+        $wishlist = $this->userWishListClass::query()
+            ->select('bravo_hotels.*' ,'media_files.file_path')
+            ->where("user_wishlist.user_id",Auth::id())
+            ->join('bravo_hotels','user_wishlist.object_id', '=', 'bravo_hotels.id')
+            ->join('media_files','bravo_hotels.image_id', '=', 'media_files.id')
+            ->orderBy('user_wishlist.id', 'desc');
+        $data = [
+            'rows' => $wishlist->paginate(5),
+            'breadcrumbs'        => [
+                [
+                    'name'  => __('Wishlist'),
+                    'class' => 'active'
+                ],
+            ],
+            'page_title'         => __("Wishlist"),
+        ];
+
+        return response()->json($data);
+    }
+
     public function handleWishList(Request $request){
         $meta = $this->userWishListClass::where("object_id",$request->input('object_id'))
             ->where("object_model",$request->input('object_model'))
